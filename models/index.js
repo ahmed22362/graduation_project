@@ -112,5 +112,6 @@ const data = catchAsync(async () => {
   const visits = await db.visit.findAll({ where: { CarPlateNum: "343dfs" } })
   console.log(data[0].plateNum, JSON.parse(JSON.stringify(visits))[1])
 })
+
 // data()
 module.exports = db

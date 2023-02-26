@@ -2,7 +2,8 @@ const express = require("express")
 const morgan = require("morgan")
 const globalErrorHandler = require("./controllers/errorController")
 const userRoute = require("./routes/userRoute")
-const visitRouter = this.request("./routes/visitRouter.js")
+const visitRouter = require("./routes/visitRouter.js")
+
 const app = express()
 
 app.use(express.json())
