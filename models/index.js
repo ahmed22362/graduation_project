@@ -112,6 +112,11 @@ const data = catchAsync(async () => {
   const visits = await db.visit.findAll({ where: { CarPlateNum: "343dfs" } })
   console.log(data[0].plateNum, JSON.parse(JSON.stringify(visits))[1])
 })
-
+const deletee = catchAsync(async () => {
+  await db.user.destroy({
+    where: { email: "admin@gmail.com" },
+  })
+})
 // data()
+// deletee()
 module.exports = db

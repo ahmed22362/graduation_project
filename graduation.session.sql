@@ -91,6 +91,6 @@ CREATE TABLE IF NOT EXISTS "Roles" (
     PRIMARY KEY ("id")
 );
 SELECT *
-from "Cars"
+from "Users"
 SELECT *
 from "Visits"

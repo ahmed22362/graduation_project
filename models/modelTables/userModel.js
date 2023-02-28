@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt")
+const crypto = require("crypto")
 
 const AppError = require("../../utils/appError")
 
@@ -36,7 +37,7 @@ module.exports = (sequelize, Sequelize) => {
       validate: {
         isSame(val) {
           if (val !== this.password) {
-            throw new Error("Password conform must be the same as password.")
+            throw new Error("Password confirm must be the same as password.")
           }
         },
       },
@@ -47,13 +48,9 @@ module.exports = (sequelize, Sequelize) => {
       defaultValue: "user",
     },
     passwordChangedAt: Sequelize.DATE,
-    passwordResetToken: Sequelize.STRING,
+    passwordResetCode: Sequelize.STRING,
     passwordResetExpire: Sequelize.DATE,
   })
-
-  User.prototype.validatePassword = async function (password) {
-    return await bcrypt.compare(password, this.password)
-  }
 
   User.beforeSave(async (user, options) => {
     if (user.changed("password")) {
@@ -67,6 +64,7 @@ module.exports = (sequelize, Sequelize) => {
     if (!user.changed("password") || this.isNewRecord) {
     } else user.passwordChangedAt = Date.now() - 1000
   })
+
   User.prototype.correctPassword = async function (
     candidatePassword,
     userPassword
@@ -80,20 +78,20 @@ module.exports = (sequelize, Sequelize) => {
         this.passwordChangedAt.getTime() / 1000,
         10
       )
-      console.log(changedPasswordSec, JWTTimestamp)
       return JWTTimestamp < changedPasswordSec
     }
     return false
   }
-  User.prototype.createPasswordResetToken = function () {
-    const resetToken = crypto.randomBytes(32).toString("hex")
-    this.passwordResetToken = crypto
+
+  User.prototype.createPasswordResetCode = function () {
+    const code = 100000 + Math.floor(Math.random() * 900000)
+    this.passwordResetCode = crypto
       .createHash("sha256")
-      .update(resetToken)
+      .update(code.toString())
       .digest("hex")
-    this.passwordResetExpire = Date.now() + 10 * 60 * 1000 // 10 minutes
-    console.log({ resetToken }, { dbResetToken: this.passwordResetToken })
-    return resetToken
+    this.passwordResetExpire = Date.now() + 20 * 60 * 1000 // 10 minutes
+    console.log({ code }, { dbResetCode: this.passwordResetCode })
+    return code
   }
   return User
 }

@@ -2,8 +2,8 @@ const express = require("express")
 const morgan = require("morgan")
 const globalErrorHandler = require("./controllers/errorController")
 const userRoute = require("./routes/userRoute")
-const visitRouter = require("./routes/visitRouter.js")
-
+const visitRouter = require("./routes/visitRouter")
+const carRouter = require("./routes/carRouter")
 const app = express()
 
 app.use(express.json())
@@ -15,11 +15,11 @@ app.use(express.json())
 
 app.use("/api/v1/users", userRoute)
 app.use("/api/v1/visits", visitRouter)
-
+app.use("/api/v1/cars", carRouter)
 app.use("/", (req, res) => {
   res.status(200).json({
     status: "success",
-    message: "hi",
+    message: "home page",
   })
 })
 app.all("*", (req, res, next) => {
