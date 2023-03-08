@@ -50,6 +50,7 @@ module.exports = (sequelize, Sequelize) => {
     passwordChangedAt: Sequelize.DATE,
     passwordResetCode: Sequelize.STRING,
     passwordResetExpire: Sequelize.DATE,
+    imageURL: { type: Sequelize.STRING },
   })
 
   User.beforeSave(async (user, options) => {
@@ -57,12 +58,8 @@ module.exports = (sequelize, Sequelize) => {
       const salt = await bcrypt.genSalt(12)
       user.password = await bcrypt.hash(user.password, salt)
       user.passwordConfirm = undefined
+      user.passwordChangedAt = Date.now()
     }
-  })
-
-  User.beforeSave(async (user, options) => {
-    if (!user.changed("password") || this.isNewRecord) {
-    } else user.passwordChangedAt = Date.now() - 1000
   })
 
   User.prototype.correctPassword = async function (

@@ -1,12 +1,16 @@
 const express = require("express")
+const multer = require("multer")
+
 const userController = require("./../controllers/userController")
 const authController = require("../controllers/authController")
 const router = express.Router()
 
-router.post("/signup", authController.signup)
+const upload = multer({ dest: "../uploads/" })
+
+router.post("/signup", upload.single("image"), authController.signup)
 router.post("/login", authController.login)
 router.post("/forgetPassword", authController.forgetPassword)
-router.post("/resetPassword", authController.resetPassword)
+router.patch("/resetPassword", authController.resetPassword)
 router.patch(
   "/updateMyPassword",
   authController.protect,

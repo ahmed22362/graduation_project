@@ -8,6 +8,7 @@ const Issue = require("./modelTables/issueModel")
 const Manager = require("./modelTables/managerModel")
 const Service = require("./modelTables/serviceModel")
 const Visit = require("./modelTables/visitModel")
+const Offer = require("./modelTables/offerModel")
 const IssueEmployees = require("./joinTables/issue_employee")
 const UserIssue = require("./joinTables/user_issue")
 const UserService = require("./joinTables/user_service")
@@ -37,17 +38,21 @@ db.issue = Issue(sequelize, Sequelize)
 db.manager = Manager(sequelize, Sequelize)
 db.service = Service(sequelize, Sequelize)
 db.visit = Visit(sequelize, Sequelize)
+db.offer = Offer(sequelize, Sequelize)
 db.user_issue = UserIssue(sequelize, Sequelize)
 db.user_service = UserService(sequelize, Sequelize)
 db.issue_employee = IssueEmployees(sequelize, Sequelize)
 // Define Relation
 
 // 1-M user and car
-db.user.hasMany(db.car)
+db.user.hasMany(db.car, { as: "cars" })
 db.car.belongsTo(db.user)
 // 1-M car and visit
-db.car.hasMany(db.visit)
+db.car.hasMany(db.visit, { as: "visits" })
 db.visit.belongsTo(db.car)
+// 1-M offer and service
+db.offer.hasMany(db.service, { as: "services" })
+db.service.belongsTo(db.offer, { foreignKey: { allowNull: true } })
 // M-M user and issue
 db.user.belongsToMany(db.issue, {
   through: db.user_issue,
@@ -98,20 +103,7 @@ db.user.belongsToMany(db.role, {
 })
 db.ROLES = ["user", "admin", "moderator"]
 db.ISSUE_STATE = ["done", "need help"]
-const data = catchAsync(async () => {
-  try {
-    const visit = await db.visit.create({
-      cost: 39,
-      CarPlateNum: "123abc",
-    })
-  } catch (error) {
-    console.log(`here from logic: ${error.name}`)
-  }
-  const cars = await db.car.findAll({ attributes: ["color", "plateNum"] })
-  const data = JSON.parse(JSON.stringify(cars))
-  const visits = await db.visit.findAll({ where: { CarPlateNum: "343dfs" } })
-  console.log(data[0].plateNum, JSON.parse(JSON.stringify(visits))[1])
-})
+const data = catchAsync(async () => {})
 const deletee = catchAsync(async () => {
   await db.user.destroy({
     where: { email: "admin@gmail.com" },

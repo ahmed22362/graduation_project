@@ -26,6 +26,8 @@ exports.createUser = (req, res) => {
 }
 
 exports.updateMe = catchAsync(async (req, res, next) => {
+  const image = req.file ? req.file.name : null
+
   // Check if the user input password
   if (req.body.password || req.body.passwordConfirm) {
     return next(

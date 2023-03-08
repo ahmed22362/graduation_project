@@ -11,7 +11,7 @@ const server = app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
 })
 db.sequelize
-  .sync()
+  .sync({ force: true })
   .then(() => {
     // init()
     console.log("Rsync Database")

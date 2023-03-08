@@ -7,7 +7,8 @@
             "driver": "PostgreSQL",
             "name": "graduation",
             "database": "db",
-            "username": "postgres"
+            "username": "postgres",
+            "password": "22362"
         }
     ]
 }
