@@ -90,7 +90,11 @@ CREATE TABLE IF NOT EXISTS "Roles" (
     "name" VARCHAR(255),
     PRIMARY KEY ("id")
 );
+SELECT s.*
+from public."ServiceTypes" sType
+    join public."Services" s on sType.id = s."ServiceTypeId"
+where sType.id = 1
 SELECT *
-from "Users"
+from public."Visits"
 SELECT *
-from "Visits"
+from public."Cars"

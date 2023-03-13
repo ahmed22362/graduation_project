@@ -3,12 +3,13 @@ module.exports = (sequelize, Sequelize) => {
     "Visit",
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-      timeIn: Sequelize.DATE,
-      timeOut: Sequelize.DATE,
-      section: Sequelize.STRING,
+      timeIn: Sequelize.STRING,
+      timeOut: Sequelize.STRING,
+      section: Sequelize.INTEGER,
       cost: Sequelize.FLOAT,
     },
     { timestamps: false }
   )
+
   return Visit
 }

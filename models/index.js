@@ -9,11 +9,11 @@ const Manager = require("./modelTables/managerModel")
 const Service = require("./modelTables/serviceModel")
 const Visit = require("./modelTables/visitModel")
 const Offer = require("./modelTables/offerModel")
+const ServiceType = require("./modelTables/servicesTypes")
 const IssueEmployees = require("./joinTables/issue_employee")
 const UserIssue = require("./joinTables/user_issue")
 const UserService = require("./joinTables/user_service")
 const catchAsync = require("../utils/catchAsync")
-
 // Connect with the local databases
 const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,
@@ -24,6 +24,12 @@ const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   },
   logging: false,
 })
+// Connect to elephantSql server for postgres
+// const sequelize = new Sequelize(
+//   "postgres://gwogfwbh:boH4Wk3Oih_AvcvkBvwAFMg6j0tK0N-1@mouse.db.elephantsql.com/gwogfwbh",
+//   { logging: false }
+// )
+
 // Define Database
 const db = {}
 db.sequelize = sequelize
@@ -39,6 +45,7 @@ db.manager = Manager(sequelize, Sequelize)
 db.service = Service(sequelize, Sequelize)
 db.visit = Visit(sequelize, Sequelize)
 db.offer = Offer(sequelize, Sequelize)
+db.service_type = ServiceType(sequelize, Sequelize)
 db.user_issue = UserIssue(sequelize, Sequelize)
 db.user_service = UserService(sequelize, Sequelize)
 db.issue_employee = IssueEmployees(sequelize, Sequelize)
@@ -53,6 +60,10 @@ db.visit.belongsTo(db.car)
 // 1-M offer and service
 db.offer.hasMany(db.service, { as: "services" })
 db.service.belongsTo(db.offer, { foreignKey: { allowNull: true } })
+// 1-M service and service type
+db.service_type.hasMany(db.service, { as: "services" })
+db.service.belongsTo(db.service_type)
+
 // M-M user and issue
 db.user.belongsToMany(db.issue, {
   through: db.user_issue,
@@ -89,6 +100,19 @@ db.issue.belongsToMany(db.employee, {
   foreignKey: "issueId",
   otherKey: "employeeId",
 })
+// M-M employee role
+db.role.belongsToMany(db.employee, {
+  through: "employee_role",
+  foreignKey: "roleId",
+  otherKey: "employeeId",
+})
+
+db.employee.belongsToMany(db.role, {
+  through: "employee_role",
+  foreignKey: "employeeId",
+  otherKey: "roleId",
+})
+
 //--------------------------------------------
 db.role.belongsToMany(db.user, {
   through: "user_role",
@@ -102,13 +126,76 @@ db.user.belongsToMany(db.role, {
   otherKey: "roleId",
 })
 db.ROLES = ["user", "admin", "moderator"]
+db.SERVICES_TYPE = ["restaurant", "store", "entertainment"]
 db.ISSUE_STATE = ["done", "need help"]
-const data = catchAsync(async () => {})
-const deletee = catchAsync(async () => {
-  await db.user.destroy({
-    where: { email: "admin@gmail.com" },
+db.SERVICES_STATE = ["done", "pending"]
+const data = catchAsync(async () => {
+  await db.car.create({ plateNum: "123abc", color: "red" })
+})
+
+const createTypes = catchAsync(async () => {
+  await db.service_type.bulkCreate([
+    { type: "restaurant" },
+    { type: "store" },
+    { type: "entertainment" },
+  ])
+})
+
+const createServices = catchAsync(async () => {
+  await db.service.bulkCreate([
+    {
+      ServiceTypeId: 1,
+      name: "KFC",
+      location: "Third floor",
+      openAt: 8,
+      closeAt: 8,
+      phone: 010,
+    },
+    {
+      ServiceTypeId: 2,
+      name: "Men's Club",
+      location: "Second floor",
+      openAt: 8,
+      closeAt: 8,
+      phone: 010,
+    },
+    {
+      ServiceTypeId: 3,
+      name: "8D Cinema",
+      location: "Third floor",
+      openAt: 8,
+      closeAt: 8,
+      phone: 010,
+    },
+    {
+      ServiceTypeId: 1,
+      name: "Crinkle",
+      location: "Third floor",
+      openAt: 8,
+      closeAt: 8,
+      phone: 010,
+    },
+  ])
+  await db.service.create({
+    ServiceTypeId: 1,
+    name: "KFC",
+    location: "Third floor",
+    openAt: 8,
+    closeAt: 8,
+    phone: 010,
   })
 })
+const findAllRest = catchAsync(async () => {
+  const aw = await db.service_type.findOne({
+    where: {
+      type: "restaurant",
+    },
+    include: "services",
+  })
+  console.log(JSON.stringify(aw))
+})
+// createTypes()
+// createServices()
+// findAllRest()
 // data()
-// deletee()
 module.exports = db

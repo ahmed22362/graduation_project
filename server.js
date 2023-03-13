@@ -1,17 +1,19 @@
 const app = require("./app")
 const dotenv = require("dotenv")
 const db = require("./models/index")
+const catchAsync = require("./utils/catchAsync")
 
 dotenv.config({ path: __dirname + "/config.env" })
 
 const port = process.env.PORT || 8000
 const Role = db.role
+const ServiceType = db.service_type
 
 const server = app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
 })
 db.sequelize
-  .sync({ force: true })
+  .sync()
   .then(() => {
     // init()
     console.log("Rsync Database")
@@ -34,8 +36,16 @@ function init() {
     name: "admin",
   })
 }
+const createTypes = catchAsync(async () => {
+  await ServiceType.bulkCreate([
+    { type: "restaurant" },
+    { type: "store" },
+    { type: "entertainment" },
+  ])
+})
+
 process.on("unhandledRejection", (err) => {
-  console.log(err.name, `this is message :${err.name}`)
+  console.log(err.name, `this is message :${err}`)
   console.log("UnhandledRejection Shutting down .......")
   server.close(() => {
     process.exit(1)

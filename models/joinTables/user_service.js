@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
     "User_Service",
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-      details: Sequelize.STRING,
+      status: Sequelize.STRING,
       cost: Sequelize.FLOAT,
     },
     { timestamps: true, createdAt: true, updatedAt: false }

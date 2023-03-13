@@ -1,14 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
   const Service = sequelize.define(
-    "Service",
+    "ServiceType",
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-      name: Sequelize.STRING,
-      location: Sequelize.STRING,
-      openAt: Sequelize.INTEGER,
-      closeAt: Sequelize.INTEGER,
-      phone: Sequelize.INTEGER,
-      imageUrl: Sequelize.STRING,
+      type: Sequelize.STRING,
     },
     { timestamps: false }
   )

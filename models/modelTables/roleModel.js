@@ -3,7 +3,11 @@ module.exports = (sequelize, Sequelize) => {
     "Role",
     {
       id: { type: Sequelize.INTEGER, primaryKey: true },
-      name: { type: Sequelize.STRING },
+      role: {
+        type: Sequelize.ENUM,
+        values: ["employee", "sub-manager", "manager"],
+        defaultValue: "employee",
+      },
     },
     {
       timestamps: false,
