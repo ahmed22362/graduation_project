@@ -98,3 +98,5 @@ SELECT *
 from public."Visits"
 SELECT *
 from public."Cars"
+SELECT *
+from public."ServiceTypes"

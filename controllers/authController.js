@@ -39,16 +39,15 @@ const createSentToken = (user, statusCode, res) => {
 }
 
 exports.signup = catchAsync(async (req, res, next) => {
+  imageUrl = req.file ? req.file.path : null
   // Create new user
-  const image = req.file ? req.file.name : null
   const newUser = await User.create({
     name: req.body.name,
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
-    role: req.body.role,
-    imageURL: image,
+    imageURL: imageURL,
   })
   createSentToken(newUser, 201, res)
 })

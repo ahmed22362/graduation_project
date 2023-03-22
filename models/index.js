@@ -9,26 +9,26 @@ const Manager = require("./modelTables/managerModel")
 const Service = require("./modelTables/serviceModel")
 const Visit = require("./modelTables/visitModel")
 const Offer = require("./modelTables/offerModel")
+const Movie = require("./modelTables/movieModel")
 const ServiceType = require("./modelTables/servicesTypes")
 const IssueEmployees = require("./joinTables/issue_employee")
 const UserIssue = require("./joinTables/user_issue")
-const UserService = require("./joinTables/user_service")
+const CheckOut = require("./joinTables/check_out")
 const catchAsync = require("../utils/catchAsync")
 // Connect with the local databases
-const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
-  host: config.HOST,
-  dialect: config.dialect,
-  pool: {
-    max: config.pool.max,
-    min: config.pool.min,
-  },
+// const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
+//   host: config.HOST,
+//   dialect: config.dialect,
+//   pool: {
+//     max: config.pool.max,
+//     min: config.pool.min,
+//   },
+//   logging: false,
+// })
+// Connect to elephantSql server for postgres
+const sequelize = new Sequelize(config.ElephantURL, {
   logging: false,
 })
-// Connect to elephantSql server for postgres
-// const sequelize = new Sequelize(
-//   "postgres://gwogfwbh:boH4Wk3Oih_AvcvkBvwAFMg6j0tK0N-1@mouse.db.elephantsql.com/gwogfwbh",
-//   { logging: false }
-// )
 
 // Define Database
 const db = {}
@@ -45,15 +45,16 @@ db.manager = Manager(sequelize, Sequelize)
 db.service = Service(sequelize, Sequelize)
 db.visit = Visit(sequelize, Sequelize)
 db.offer = Offer(sequelize, Sequelize)
+db.movie = Movie(sequelize, Sequelize)
 db.service_type = ServiceType(sequelize, Sequelize)
 db.user_issue = UserIssue(sequelize, Sequelize)
-db.user_service = UserService(sequelize, Sequelize)
+db.check_out = CheckOut(sequelize, Sequelize)
 db.issue_employee = IssueEmployees(sequelize, Sequelize)
 // Define Relation
 
 // 1-M user and car
 db.user.hasMany(db.car, { as: "cars" })
-db.car.belongsTo(db.user)
+db.car.belongsTo(db.user, { foreignKey: { allowNull: true } })
 // 1-M car and visit
 db.car.hasMany(db.visit, { as: "visits" })
 db.visit.belongsTo(db.car)
@@ -63,6 +64,9 @@ db.service.belongsTo(db.offer, { foreignKey: { allowNull: true } })
 // 1-M service and service type
 db.service_type.hasMany(db.service, { as: "services" })
 db.service.belongsTo(db.service_type)
+// 1-M service and movie
+db.service.hasMany(db.movie, { as: "movies" })
+db.movie.belongsTo(db.service)
 
 // M-M user and issue
 db.user.belongsToMany(db.issue, {
@@ -78,13 +82,13 @@ db.issue.belongsToMany(db.user, {
 })
 //M-M user and service
 db.user.belongsToMany(db.service, {
-  through: db.user_service,
+  through: db.check_out,
   foreignKey: "userId",
   otherKey: "serviceId",
   unique: false,
 })
 db.service.belongsToMany(db.user, {
-  through: db.user_service,
+  through: db.check_out,
   foreignKey: "serviceId",
   otherKey: "userId",
   unique: false,
@@ -111,20 +115,9 @@ db.employee.belongsToMany(db.role, {
   through: "employee_role",
   foreignKey: "employeeId",
   otherKey: "roleId",
+  timestamps: false,
 })
 
-//--------------------------------------------
-db.role.belongsToMany(db.user, {
-  through: "user_role",
-  foreignKey: "roleId",
-  otherKey: "userId",
-})
-
-db.user.belongsToMany(db.role, {
-  through: "user_role",
-  foreignKey: "user_id",
-  otherKey: "roleId",
-})
 db.ROLES = ["user", "admin", "moderator"]
 db.SERVICES_TYPE = ["restaurant", "store", "entertainment"]
 db.ISSUE_STATE = ["done", "need help"]

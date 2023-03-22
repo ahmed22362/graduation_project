@@ -42,11 +42,6 @@ module.exports = (sequelize, Sequelize) => {
         },
       },
     },
-    role: {
-      type: Sequelize.ENUM,
-      values: ["user", "employee", "sub-manager", "manager"],
-      defaultValue: "user",
-    },
     passwordChangedAt: Sequelize.DATE,
     passwordResetCode: Sequelize.STRING,
     passwordResetExpire: Sequelize.DATE,

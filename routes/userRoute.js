@@ -3,9 +3,11 @@ const multer = require("multer")
 
 const userController = require("./../controllers/userController")
 const authController = require("../controllers/authController")
+const storage = require("../utils/cloudinary")
+
 const router = express.Router()
 
-const upload = multer({ dest: "../uploads/" })
+const upload = multer({ storage: storage })
 
 router.post("/signup", upload.single("image"), authController.signup)
 router.post("/login", authController.login)
@@ -16,8 +18,14 @@ router.patch(
   authController.protect,
   authController.updateUserPassword
 )
-router.patch("/updateMe", authController.protect, userController.updateMe)
+router.patch(
+  "/updateMe",
+  upload.single("image"),
+  authController.protect,
+  userController.updateMe
+)
 router.delete("/deleteMe", authController.protect, userController.deleteMe)
+router.patch("/addCar", authController.protect, userController.userAddCar)
 
 // router.use(
 //   authController.protect,

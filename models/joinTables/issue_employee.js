@@ -2,7 +2,11 @@ module.exports = (sequelize, Sequelize) => {
   const Issue_Employee = sequelize.define(
     "Issue_Employee",
     {
-      state: Sequelize.STRING,
+      state: {
+        type: Sequelize.ENUM,
+        values: ["pending", "done", "need help"],
+        defaultValue: "pending",
+      },
     },
     { timestamps: false }
   )

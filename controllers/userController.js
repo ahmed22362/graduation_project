@@ -2,17 +2,7 @@ const catchAsync = require("../utils/catchAsync")
 const db = require("../models/index")
 const AppError = require("../utils/appError")
 const User = db.user
-const Role = db.role
-
-const filterObj = (obj, ...allowedFields) => {
-  const newObj = {}
-  Object.keys(obj).forEach((el) => {
-    if (allowedFields.includes(el)) {
-      newObj[el] = obj[el]
-    }
-  })
-  return newObj
-}
+const Car = db.car
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.findAll()
@@ -75,3 +65,19 @@ exports.deleteUser = (req, res) => {
     message: "This route is not yet defined!",
   })
 }
+exports.userAddCar = catchAsync(async (req, res, next) => {
+  const { plateNum } = req.body
+  const userId = req.user.id
+  let car = await Car.findByPk(plateNum)
+  car.UserId = userId
+  await car.save()
+  console.log(car)
+  if (!car) return next(new AppError("Can't find the car!", 404))
+  const user = await User.findOne({
+    where: {
+      id: userId,
+    },
+    include: "cars",
+  })
+  res.status(200).json({ status: "success", date: user })
+})

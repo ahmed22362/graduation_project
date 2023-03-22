@@ -1,0 +1,4 @@
+module.exports = {
+  B2_ACCOUNT_ID: "77bdc013e065",
+  B2_APPLICATION_KEY: "005be690c2f908ab21807c59256ef6ea85a8a50bd0",
+}
