@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
   const CheckOut = sequelize.define(
-    "CheckOut",
+    "checkOut",
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
       status: {

@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
   const Car = sequelize.define(
-    "Car",
+    "car",
     {
       plateNum: { type: Sequelize.STRING, primaryKey: true },
       color: Sequelize.STRING,

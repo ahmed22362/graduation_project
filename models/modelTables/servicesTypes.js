@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
   const Service = sequelize.define(
-    "ServiceType",
+    "serviceType",
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
       type: Sequelize.STRING,

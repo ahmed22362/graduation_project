@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
   const User_Issue = sequelize.define(
-    "User_Issue",
+    "user_issue",
     {
       details: Sequelize.STRING,
       image: Sequelize.STRING,

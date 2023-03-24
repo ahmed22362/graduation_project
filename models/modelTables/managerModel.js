@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
   const Manager = sequelize.define(
-    "Manager",
+    "manager",
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
       name: Sequelize.STRING,

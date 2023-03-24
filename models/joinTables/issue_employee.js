@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
   const Issue_Employee = sequelize.define(
-    "Issue_Employee",
+    "issue_employee",
     {
       state: {
         type: Sequelize.ENUM,

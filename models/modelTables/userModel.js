@@ -5,7 +5,7 @@ const AppError = require("../../utils/appError")
 
 module.exports = (sequelize, Sequelize) => {
   const User = sequelize.define(
-    "User",
+    "user",
     {
       id: {
         type: Sequelize.INTEGER,

@@ -1,9 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
   const Movie = sequelize.define(
-    "Movie",
+    "movie",
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-      name: { type: Sequelize.STRING, primaryKey: true },
+      name: { type: Sequelize.STRING },
       duration: Sequelize.INTEGER,
       release: Sequelize.DATEONLY,
       description: Sequelize.STRING,

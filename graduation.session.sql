@@ -95,8 +95,15 @@ from public."ServiceTypes" sType
     join public."Services" s on sType.id = s."ServiceTypeId"
 where sType.id = 1
 SELECT *
-from public."Visits"
+from "Visit"
 SELECT *
 from public."Cars"
 SELECT *
-from public."ServiceTypes"
+from public."ServiceTypes";
+-- drop all tables
+drop schema public cascade;
+create schema public;
+SELECT *
+FROM "visit" v
+where "timeIn" is NOT NULL
+    and "timeOut" IS NULL

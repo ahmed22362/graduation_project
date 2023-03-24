@@ -2,9 +2,12 @@ const catchAsync = require("../utils/catchAsync")
 const db = require("../models/index")
 const AppError = require("../utils/appError")
 const chooseColor = require("../utils/chooseColor")
+const { Op } = require("sequelize")
 
 const Car = db.car
 const Visit = db.visit
+const sequelize = db.sequelize
+
 // Function to filter body for only wanted params
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {}
@@ -151,4 +154,17 @@ exports.updateVisitById = catchAsync(async (req, res, next) => {
   })
   // Return the updated record
   res.status(200).json({ status: "success", data: updatedVisit[1] })
+})
+
+exports.getSectionCapacity = catchAsync(async (req, res, next) => {
+  const visits = await Visit.findAll({
+    attributes: [
+      "section",
+      [sequelize.fn("COUNT", sequelize.col("id")), "cars"],
+    ],
+    group: ["section"],
+    where: { timeIn: { [Op.not]: null }, timeOut: null },
+  })
+  if (!visits) return next(new AppError("can't get sections", 500))
+  res.status(200).json({ status: "success", data: visits })
 })
