@@ -4,49 +4,53 @@ const crypto = require("crypto")
 const AppError = require("../../utils/appError")
 
 module.exports = (sequelize, Sequelize) => {
-  const User = sequelize.define("User", {
-    id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    name: { type: Sequelize.STRING, allowNull: false },
-    username: {
-      type: Sequelize.STRING,
-      allowNull: false,
-      unique: {
-        msg: "Username already in use!",
+  const User = sequelize.define(
+    "User",
+    {
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
       },
-    },
-    email: {
-      type: Sequelize.STRING,
-      allowNull: false,
-      unique: {
-        msg: "Email address already in use!",
-      },
-      validate: {
-        isEmail: { msg: "Please provide a valid email" },
-      },
-    },
-    password: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    passwordConfirm: {
-      type: Sequelize.STRING,
-      validate: {
-        isSame(val) {
-          if (val !== this.password) {
-            throw new Error("Password confirm must be the same as password.")
-          }
+      name: { type: Sequelize.STRING, allowNull: false },
+      username: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: {
+          msg: "Username already in use!",
         },
       },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: {
+          msg: "Email address already in use!",
+        },
+        validate: {
+          isEmail: { msg: "Please provide a valid email" },
+        },
+      },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      passwordConfirm: {
+        type: Sequelize.STRING,
+        validate: {
+          isSame(val) {
+            if (val !== this.password) {
+              throw new Error("Password confirm must be the same as password.")
+            }
+          },
+        },
+      },
+      passwordChangedAt: Sequelize.DATE,
+      passwordResetCode: Sequelize.STRING,
+      passwordResetExpire: Sequelize.DATE,
+      imageURL: { type: Sequelize.STRING },
     },
-    passwordChangedAt: Sequelize.DATE,
-    passwordResetCode: Sequelize.STRING,
-    passwordResetExpire: Sequelize.DATE,
-    imageURL: { type: Sequelize.STRING },
-  })
+    { freezeTableName: true }
+  )
 
   User.beforeSave(async (user, options) => {
     if (user.changed("password")) {

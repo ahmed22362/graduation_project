@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
       time: Sequelize.TIME,
       ticketPrice: Sequelize.DOUBLE,
     },
-    { timestamps: false }
+    { timestamps: false, freezeTableName: true }
   )
   return Movie
 }

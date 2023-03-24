@@ -47,7 +47,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
-    imageURL: imageURL,
+    imageURL: imageUrl,
   })
   createSentToken(newUser, 201, res)
 })

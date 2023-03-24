@@ -5,7 +5,7 @@ module.exports = (sequelize, Sequelize) => {
       plateNum: { type: Sequelize.STRING, primaryKey: true },
       color: Sequelize.STRING,
     },
-    { timestamps: false }
+    { timestamps: false, freezeTableName: true }
   )
   return Car
 }

@@ -5,6 +5,16 @@ const chooseColor = require("../utils/chooseColor")
 
 const Car = db.car
 const Visit = db.visit
+// Function to filter body for only wanted params
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {}
+  Object.keys(obj).forEach((el) => {
+    if (allowedFields.includes(el)) {
+      newObj[el] = obj[el]
+    }
+  })
+  return newObj
+}
 
 exports.addVisit = catchAsync(async (req, res, next) => {
   const plateNum = req.body.plateNum
@@ -94,8 +104,51 @@ exports.visitCarOut = catchAsync(async (req, res, next) => {
   res.status(200).json({ status: "success", data: updatedVisit })
 })
 
-exports.deleteVisits = async (req, res, next) => {
+exports.deleteCarVisits = async (req, res, next) => {
   await Visit.destroy({ where: { CarPlateNum: req.params.plateNum } })
   console.log(req.params.plateNum)
   res.status(204).json({ status: "success", data: null })
 }
+
+exports.getVisitsByCar = catchAsync(async (req, res, next) => {
+  const { plateNum } = req.params
+  const carVisits = await Visit.findAll({ where: { CarPlateNum: plateNum } })
+  if (!carVisits)
+    return next(
+      new AppError("Cant get visits by car something wrong happened", 500)
+    )
+  res.status(200).json({ status: "success", data: carVisits })
+})
+
+exports.getVisitById = catchAsync(async (req, res, next) => {
+  const id = req.params.id
+  console.log("here" + id)
+  const visit = await Visit.findByPk(id)
+  if (!visit) {
+    return next(
+      new AppError("Cant get visits by car something wrong happened", 500)
+    )
+  }
+  res.status(200).json({ status: "success", data: visit, else: "yes you here" })
+})
+
+exports.deleteVisitById = catchAsync(async (req, res, next) => {
+  const id = req.params.id
+  await Visit.destroy({ id })
+  res.status(204).json({ status: "success", data: null })
+})
+
+exports.updateVisitById = catchAsync(async (req, res, next) => {
+  const id = req.params.id
+  // Filter the wanted fields only
+  const filteredBody = filterObj(req.body, "section", "cost")
+
+  // Update function return array contain numbers of effected records and the returning
+  // option to return the updated record
+  const updatedVisit = await Visit.update(filteredBody, {
+    where: { id },
+    returning: true,
+  })
+  // Return the updated record
+  res.status(200).json({ status: "success", data: updatedVisit[1] })
+})

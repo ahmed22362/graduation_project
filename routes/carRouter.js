@@ -3,6 +3,6 @@ const carController = require("../controllers/carController")
 
 router = express.Router()
 
-router.route("/").get(carController.getCars).post(carController.addCar)
 router.get("/:plateNum", carController.getCar)
+router.route("/").get(carController.getCars).post(carController.addCar)
 module.exports = router

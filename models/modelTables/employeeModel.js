@@ -7,7 +7,7 @@ module.exports = (sequelize, Sequelize) => {
       email: Sequelize.STRING,
       password: Sequelize.STRING,
     },
-    { timestamps: false }
+    { timestamps: false, freezeTableName: true }
   )
   return Employee
 }

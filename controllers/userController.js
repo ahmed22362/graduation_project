@@ -4,6 +4,16 @@ const AppError = require("../utils/appError")
 const User = db.user
 const Car = db.car
 
+// Function to filter body for only wanted params
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {}
+  Object.keys(obj).forEach((el) => {
+    if (allowedFields.includes(el)) {
+      newObj[el] = obj[el]
+    }
+  })
+  return newObj
+}
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.findAll()
   res.status(200).json({ users })
@@ -25,7 +35,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     )
   }
   // Filter the wanted fields only
-  const filteredBody = filterObj(req.body, "name", "email")
+  const filteredBody = filterObj(req.body, "name", "email", "imageURL")
 
   // Update function return array contain numbers of effected records and the returning
   // option to return the updated record
@@ -53,26 +63,36 @@ exports.getUser = catchAsync(async (req, res, next) => {
     message: user,
   })
 })
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "This route is not yet defined!",
+exports.updateUserById = catchAsync(async (req, res, next) => {
+  // Filter the wanted fields only
+  const filteredBody = filterObj(req.body, "name", "email")
+
+  // Update function return array contain numbers of effected records and the returning
+  // option to return the updated record
+  const updatedUser = await User.update(filteredBody, {
+    where: { id: req.params.id },
+    returning: true,
   })
-}
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "This route is not yet defined!",
-  })
-}
+
+  // Return the updated record
+  res.status(200).json({ status: "success", data: updatedUser[1] })
+})
+exports.deleteUserById = catchAsync(async (req, res) => {
+  const id = req.params.id
+  await User.destroy({ where: { id } })
+  res.status(200).json({ status: "success", data: null })
+})
 exports.userAddCar = catchAsync(async (req, res, next) => {
   const { plateNum } = req.body
   const userId = req.user.id
+  // Find the wanted car
   let car = await Car.findByPk(plateNum)
   car.UserId = userId
+  // Save the change in db
   await car.save()
   console.log(car)
   if (!car) return next(new AppError("Can't find the car!", 404))
+  // Find user to return data with include the cars
   const user = await User.findOne({
     where: {
       id: userId,

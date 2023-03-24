@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
       section: Sequelize.INTEGER,
       cost: Sequelize.FLOAT,
     },
-    { timestamps: false }
+    { timestamps: false, freezeTableName: true }
   )
 
   return Visit

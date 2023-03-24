@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
       phone: Sequelize.INTEGER,
       imageUrl: Sequelize.STRING,
     },
-    { timestamps: false }
+    { timestamps: false, freezeTableName: true }
   )
   return Service
 }

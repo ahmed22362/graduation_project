@@ -5,7 +5,7 @@ module.exports = (sequelize, Sequelize) => {
       details: Sequelize.STRING,
       image: Sequelize.STRING,
     },
-    { timestamps: true }
+    { timestamps: true, freezeTableName: true }
   )
   return User_Issue
 }

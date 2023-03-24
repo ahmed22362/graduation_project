@@ -5,7 +5,7 @@ module.exports = (sequelize, Sequelize) => {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
       type: Sequelize.STRING,
     },
-    { timestamps: false }
+    { timestamps: false, freezeTableName: true }
   )
   return Issue
 }

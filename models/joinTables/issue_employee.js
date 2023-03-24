@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
         defaultValue: "pending",
       },
     },
-    { timestamps: false }
+    { timestamps: false, freezeTableName: true }
   )
   return Issue_Employee
 }

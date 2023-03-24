@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
       duration: Sequelize.INTEGER,
       discount: Sequelize.DOUBLE,
     },
-    { timestamps: false }
+    { timestamps: false, freezeTableName: true }
   )
   return offer
 }
