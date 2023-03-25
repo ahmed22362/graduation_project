@@ -16,19 +16,19 @@ const UserIssue = require("./joinTables/user_issue")
 const CheckOut = require("./joinTables/check_out")
 const catchAsync = require("../utils/catchAsync")
 // Connect with the local databases
-const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
-  host: config.HOST,
-  dialect: config.dialect,
-  pool: {
-    max: config.pool.max,
-    min: config.pool.min,
-  },
-  logging: false,
-})
-// Connect to elephantSql server for postgres
-// const sequelize = new Sequelize(config.ElephantURL, {
+// const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
+//   host: config.HOST,
+//   dialect: config.dialect,
+//   pool: {
+//     max: config.pool.max,
+//     min: config.pool.min,
+//   },
 //   logging: false,
 // })
+// Connect to elephantSql server for postgres
+const sequelize = new Sequelize(config.ElephantURL, {
+  logging: false,
+})
 
 // Define Database
 const db = {}
