@@ -125,6 +125,7 @@ exports.getVisitsByCar = catchAsync(async (req, res, next) => {
 
 exports.getVisitById = catchAsync(async (req, res, next) => {
   const id = req.params.id
+  if (!id) return next(new AppError("can't find params id", 400))
   console.log("here" + id)
   const visit = await Visit.findByPk(id)
   if (!visit) {
@@ -137,12 +138,14 @@ exports.getVisitById = catchAsync(async (req, res, next) => {
 
 exports.deleteVisitById = catchAsync(async (req, res, next) => {
   const id = req.params.id
+  if (!id) return next(new AppError("can't find params id", 400))
   await Visit.destroy({ id })
   res.status(204).json({ status: "success", data: null })
 })
 
 exports.updateVisitById = catchAsync(async (req, res, next) => {
   const id = req.params.id
+  if (!id) return next(new AppError("can't find params id", 400))
   // Filter the wanted fields only
   const filteredBody = filterObj(req.body, "section", "cost")
 
@@ -157,6 +160,7 @@ exports.updateVisitById = catchAsync(async (req, res, next) => {
 })
 
 exports.getSectionCapacity = catchAsync(async (req, res, next) => {
+  // find all cars that get in and never out
   const visits = await Visit.findAll({
     attributes: [
       "section",

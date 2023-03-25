@@ -99,11 +99,13 @@ from "Visit"
 SELECT *
 from public."Cars"
 SELECT *
-from public."ServiceTypes";
+from public."serviceType";
 -- drop all tables
 drop schema public cascade;
 create schema public;
 SELECT *
 FROM "visit" v
 where "timeIn" is NOT NULL
-    and "timeOut" IS NULL
+    and "timeOut" IS NULL;
+SELECT *
+from public."service"

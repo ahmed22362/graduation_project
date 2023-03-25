@@ -5,6 +5,7 @@ const userRoute = require("./routes/userRoute")
 const visitRouter = require("./routes/visitRouter")
 const carRouter = require("./routes/carRouter")
 const serviceRouter = require("./routes/serviceRouter")
+const offerRouter = require("./routes/offerRouter")
 const storage = require("./utils/cloudinary")
 const multer = require("multer")
 
@@ -22,6 +23,7 @@ app.use("/api/v1/users", userRoute)
 app.use("/api/v1/visits", visitRouter)
 app.use("/api/v1/cars", carRouter)
 app.use("/api/v1/services", serviceRouter)
+app.use("/api/v1/offers", offerRouter)
 app.use("/api/v1/upload", upload.single("image"), async (req, res, next) => {
   imageUrl = req.file ? req.file.path : null
   res.status(200).json({ imageUrl: imageUrl })

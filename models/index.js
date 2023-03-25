@@ -131,6 +131,7 @@ const createTypes = catchAsync(async () => {
     { type: "restaurant" },
     { type: "store" },
     { type: "entertainment" },
+    { type: "cinema" },
   ])
 })
 

@@ -7,7 +7,7 @@ module.exports = (sequelize, Sequelize) => {
       location: Sequelize.STRING,
       openAt: Sequelize.INTEGER,
       closeAt: Sequelize.INTEGER,
-      phone: Sequelize.INTEGER,
+      phone: Sequelize.STRING,
       imageUrl: Sequelize.STRING,
     },
     { timestamps: false, freezeTableName: true }
