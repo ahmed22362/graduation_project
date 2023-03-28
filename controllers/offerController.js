@@ -12,18 +12,22 @@ exports.getHotOffersServices = catchAsync(async (req, res, next) => {
     where: { discount: { [Op.gte]: 40 } },
     include: "services",
   })
+
   if (!hotOffers) return next(new AppError("Cant find hot offers", 500))
   // Parse the object to select only the services
   const services = JSON.parse(JSON.stringify(hotOffers))[0].services
-  res.status(200).json({ status: "success", data: services })
+
+  res.status(200).json({ status: "success", data: services ? services : [] })
 })
+
 //Get All Offers include services
 exports.getAllOffersServices = catchAsync(async (req, res, next) => {
   const offers = await Offer.findAll({ include: "services" })
   if (!offers) return next(new AppError("Cant find offers", 404))
   const services = JSON.parse(JSON.stringify(offers))[0].services
-  res.status(200).json({ status: "success", data: services })
+  res.status(200).json({ status: "success", data: services ? services : [] })
 })
+
 // Get all offers
 exports.getAllOffers = catchAsync(async (req, res, next) => {
   const offers = await Offer.findAll()
@@ -43,12 +47,15 @@ exports.addOffer = catchAsync(async (req, res, next) => {
 exports.getOfferById = catchAsync(async (req, res, next) => {
   const id = req.params.id
   const offer = await Offer.findByPk(id)
-  if (!offer) return next(new AppError("cant find Offer", 404))
+  if (!offer) return next(new AppError("Can't find offer with this id", 404))
   res.status(201).json({ status: "success", data: offer })
 })
+
 // Delete Offer by id
 exports.deleteOffer = catchAsync(async (req, res, next) => {
   const id = req.params.id
-  await Offer.destroy({ where: { id } })
+  const offer = await Offer.findByPk(id)
+  if (!offer) return next(new AppError("Can't find offer with this id", 404))
+  await offer.destroy()
   res.status(204).json({ status: "success", data: null })
 })

@@ -14,6 +14,7 @@ const ServiceType = require("./modelTables/servicesTypes")
 const IssueEmployees = require("./joinTables/issue_employee")
 const UserIssue = require("./joinTables/user_issue")
 const CheckOut = require("./joinTables/check_out")
+const UserService = require("./joinTables/user_service")
 const catchAsync = require("../utils/catchAsync")
 // Connect with the local databases
 // const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
@@ -50,6 +51,7 @@ db.service_type = ServiceType(sequelize, Sequelize)
 db.user_issue = UserIssue(sequelize, Sequelize)
 db.check_out = CheckOut(sequelize, Sequelize)
 db.issue_employee = IssueEmployees(sequelize, Sequelize)
+db.user_service = UserService(sequelize, Sequelize)
 // Define Relation
 
 // 1-M user and car
@@ -66,16 +68,18 @@ db.service_type.hasMany(db.service, { as: "services" })
 db.service.belongsTo(db.service_type)
 // 1-M service and movie
 db.service.hasMany(db.movie, { as: "movies" })
-db.movie.belongsTo(db.service)
+db.movie.belongsTo(db.service, { as: "service" })
 
 // M-M user and issue
 db.user.belongsToMany(db.issue, {
   through: db.user_issue,
+  as: "issue",
   foreignKey: "userId",
   otherKey: "issueId",
 })
 db.issue.belongsToMany(db.user, {
   through: db.user_issue,
+  as: "user",
   foreignKey: "issueId",
   otherKey: "userId",
   unique: false,
@@ -83,16 +87,30 @@ db.issue.belongsToMany(db.user, {
 //M-M user and movies
 db.user.belongsToMany(db.movie, {
   through: db.check_out,
+  as: "movie",
   foreignKey: "userId",
   otherKey: "movieId",
   unique: false,
 })
 db.movie.belongsToMany(db.user, {
   through: db.check_out,
+  as: "user",
   foreignKey: "movieId",
   otherKey: "userId",
   unique: false,
 })
+// M-M user and service saved as user visit static data only add and delete
+db.user.belongsToMany(db.service, {
+  through: db.user_service,
+  as: "service",
+  foreignKey: "userId",
+})
+db.service.belongsToMany(db.user, {
+  through: db.user_service,
+  as: "user",
+  foreignKey: "serviceId",
+})
+
 // M-M issue and employee
 db.employee.belongsToMany(db.issue, {
   through: db.issue_employee,

@@ -26,7 +26,12 @@ router.patch(
 )
 router.delete("/deleteMe", authController.protect, userController.deleteMe)
 router.patch("/addCar", authController.protect, userController.userAddCar)
-
+router
+  .route("/user-visit")
+  .post(authController.protect, userController.addToUserVisit)
+  .get(authController.protect, userController.getUserVisit)
+  .delete(authController.protect, userController.removeFromUserVisit)
+router.route("/checkout").get()
 // router.use(
 //   authController.protect,
 //   authController.restrictTo("manager", "sub-manager")

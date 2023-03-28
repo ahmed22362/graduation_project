@@ -3,6 +3,8 @@ const db = require("../models/index")
 const AppError = require("../utils/appError")
 const User = db.user
 const Car = db.car
+const Service = db.service
+const UserVisit = db.user_service
 
 // Function to filter body for only wanted params
 const filterObj = (obj, ...allowedFields) => {
@@ -100,4 +102,43 @@ exports.userAddCar = catchAsync(async (req, res, next) => {
     include: "cars",
   })
   res.status(200).json({ status: "success", date: user })
+})
+
+exports.addToUserVisit = catchAsync(async (req, res, next) => {
+  // Find the user and the service
+  const user = await User.findByPk(req.user.id)
+  const serviceId = req.body.serviceId
+
+  if (!serviceId) return next(new AppError("please provide service id", 404))
+
+  if (!user) return next(new AppError("please provide valid user id", 404))
+  // Add the service to selected user
+  await user.addService(serviceId)
+
+  res.status(200).json({ status: "success", data: {} })
+})
+
+exports.removeFromUserVisit = catchAsync(async (req, res, next) => {
+  const user = await User.findByPk(req.user.id)
+  const serviceId = req.body.serviceId
+
+  if (!serviceId) return next(new AppError("please provide service id", 404))
+  if (!user) return next(new AppError("please provide user id", 404))
+
+  // Add the service to selected user
+  await user.removeService(serviceId)
+
+  res.status(200).json({ status: "success", data: {} })
+})
+
+exports.getUserVisit = catchAsync(async (req, res, next) => {
+  const userId = req.user.id
+  // find the user include the service
+  const userVisit = await User.findByPk(userId, {
+    include: ["service"],
+  })
+  if (!userVisit) return next(new AppError("can't get visits", 404))
+  // Select only service
+  const service = JSON.parse(JSON.stringify(userVisit)).service
+  res.status(200).json({ status: "success", data: service })
 })

@@ -108,4 +108,4 @@ FROM "visit" v
 where "timeIn" is NOT NULL
     and "timeOut" IS NULL;
 SELECT *
-from public."service"
+from public."user_service"
