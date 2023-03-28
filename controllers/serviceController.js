@@ -44,6 +44,7 @@ exports.getServicesById = catchAsync(async (req, res, next) => {
 })
 
 exports.addService = catchAsync(async (req, res, next) => {
+  console.log("here")
   const imageUrl = req.file ? req.file.path : null
   const { name, location, openAt, closeAt, phone, serviceTypeId, offerId } =
     req.body

@@ -16,7 +16,7 @@ router
     // authController.restrictTo("manager", "sub-manager"),
     serviceController.deleteService
   )
-router.get("/", serviceController.getAllService).post(
+router.route("/").get(serviceController.getAllService).post(
   // authController.protect,
   // authController.restrictTo("manager", "sub-manager"),
   serviceController.addService
