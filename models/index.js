@@ -1,35 +1,36 @@
 const Sequelize = require("sequelize")
 const config = require("./../config/dbConfig")
 const User = require("./modelTables/userModel")
-const Role = require("./modelTables/roleModel")
 const Car = require("./modelTables/carModel")
 const Employee = require("./modelTables/employeeModel")
 const Issue = require("./modelTables/issueModel")
 const Manager = require("./modelTables/managerModel")
-const Service = require("./modelTables/serviceModel")
+const Shop = require("./modelTables/shopModel")
 const Visit = require("./modelTables/visitModel")
 const Offer = require("./modelTables/offerModel")
 const Movie = require("./modelTables/movieModel")
-const ServiceType = require("./modelTables/servicesTypes")
-const IssueEmployees = require("./joinTables/issue_employee")
+const Cinema = require("./modelTables/cinemaModel")
+const Checkout = require("./joinTables/check_out")
+const CinemaMovie = require("./joinTables/cinema_movie")
+const UserShop = require("./joinTables/user_shop")
+const OfferShop = require("./joinTables/offer_shop")
 const UserIssue = require("./joinTables/user_issue")
-const CheckOut = require("./joinTables/check_out")
-const UserService = require("./joinTables/user_service")
+const IssueEmployee = require("./joinTables/issue_employee")
 const catchAsync = require("../utils/catchAsync")
 // Connect with the local databases
-// const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
-//   host: config.HOST,
-//   dialect: config.dialect,
-//   pool: {
-//     max: config.pool.max,
-//     min: config.pool.min,
-//   },
-//   logging: false,
-// })
-// Connect to elephantSql server for postgres
-const sequelize = new Sequelize(config.ElephantURL, {
+const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
+  host: config.HOST,
+  dialect: config.dialect,
+  pool: {
+    max: config.pool.max,
+    min: config.pool.min,
+  },
   logging: false,
 })
+// Connect to elephantSql server for postgres
+// const sequelize = new Sequelize(config.ElephantURL, {
+//   logging: false,
+// })
 
 // Define Database
 const db = {}
@@ -37,38 +38,30 @@ db.sequelize = sequelize
 db.Sequelize = Sequelize
 
 // Define Tables
-db.role = Role(sequelize, Sequelize)
 db.user = User(sequelize, Sequelize)
 db.car = Car(sequelize, Sequelize)
 db.employee = Employee(sequelize, Sequelize)
 db.issue = Issue(sequelize, Sequelize)
 db.manager = Manager(sequelize, Sequelize)
-db.service = Service(sequelize, Sequelize)
+db.shop = Shop(sequelize, Sequelize)
 db.visit = Visit(sequelize, Sequelize)
 db.offer = Offer(sequelize, Sequelize)
 db.movie = Movie(sequelize, Sequelize)
-db.service_type = ServiceType(sequelize, Sequelize)
+db.cinema = Cinema(sequelize, Sequelize)
+db.check_out = Checkout(sequelize, Sequelize)
+db.user_shop = UserShop(sequelize, Sequelize)
+db.cinema_movie = CinemaMovie(sequelize, Sequelize)
 db.user_issue = UserIssue(sequelize, Sequelize)
-db.check_out = CheckOut(sequelize, Sequelize)
-db.issue_employee = IssueEmployees(sequelize, Sequelize)
-db.user_service = UserService(sequelize, Sequelize)
+db.issue_employee = IssueEmployee(sequelize, Sequelize)
+db.offer_shop = OfferShop(sequelize, Sequelize)
 // Define Relation
 
 // 1-M user and car
-db.user.hasMany(db.car, { as: "cars" })
+db.user.hasMany(db.car, { as: "car" })
 db.car.belongsTo(db.user, { foreignKey: { allowNull: true } })
 // 1-M car and visit
-db.car.hasMany(db.visit, { as: "visits" })
+db.car.hasMany(db.visit, { as: "visit" })
 db.visit.belongsTo(db.car)
-// 1-M offer and service
-db.offer.hasMany(db.service, { as: "services" })
-db.service.belongsTo(db.offer, { foreignKey: { allowNull: true } })
-// 1-M service and service type
-db.service_type.hasMany(db.service, { as: "services" })
-db.service.belongsTo(db.service_type)
-// 1-M service and movie
-db.service.hasMany(db.movie, { as: "movies" })
-db.movie.belongsTo(db.service, { as: "service" })
 
 // M-M user and issue
 db.user.belongsToMany(db.issue, {
@@ -84,7 +77,13 @@ db.issue.belongsToMany(db.user, {
   otherKey: "userId",
   unique: false,
 })
+db.user.hasMany(db.user_issue)
+db.user_issue.belongsTo(db.user)
+db.issue.hasMany(db.user_issue)
+db.user_issue.belongsTo(db.issue)
+
 //M-M user and movies
+// Apply super many to many read the doc https://sequelize.org/docs/v6/advanced-association-concepts/advanced-many-to-many/#the-best-of-both-worlds-the-super-many-to-many-relationship
 db.user.belongsToMany(db.movie, {
   through: db.check_out,
   as: "movie",
@@ -99,42 +98,63 @@ db.movie.belongsToMany(db.user, {
   otherKey: "userId",
   unique: false,
 })
+db.user.hasMany(db.check_out)
+db.check_out.belongsTo(db.user)
+db.movie.hasMany(db.check_out)
+db.check_out.belongsTo(db.movie)
 // M-M user and service saved as user visit static data only add and delete
-db.user.belongsToMany(db.service, {
-  through: db.user_service,
-  as: "service",
+db.user.belongsToMany(db.shop, {
+  through: db.user_shop,
+  as: "shops",
   foreignKey: "userId",
 })
-db.service.belongsToMany(db.user, {
-  through: db.user_service,
+db.shop.belongsToMany(db.user, {
+  through: db.user_shop,
   as: "user",
-  foreignKey: "serviceId",
+  foreignKey: "shopId",
 })
-
+db.user.hasMany(db.user_shop)
+db.user_shop.belongsTo(db.user)
+db.shop.hasMany(db.user_shop)
+db.user_shop.belongsTo(db.shop)
 // M-M issue and employee
 db.employee.belongsToMany(db.issue, {
   through: db.issue_employee,
+  as: "issue",
   foreignKey: "employeeId",
   otherKey: "issueId",
 })
 db.issue.belongsToMany(db.employee, {
   through: db.issue_employee,
+  as: "employee",
   foreignKey: "issueId",
   otherKey: "employeeId",
 })
-// M-M employee role
-db.role.belongsToMany(db.employee, {
-  through: "employee_role",
-  foreignKey: "roleId",
-  otherKey: "employeeId",
+db.employee.hasMany(db.issue_employee)
+db.issue_employee.belongsTo(db.employee)
+db.issue.hasMany(db.issue_employee)
+db.issue_employee.belongsTo(db.issue)
+// M-M shop offer
+db.shop.belongsToMany(db.offer, {
+  through: db.offer_shop,
+  as: "offer",
 })
+db.offer.belongsToMany(db.shop, {
+  through: db.offer_shop,
+  as: "shop",
+})
+db.shop.hasMany(db.offer_shop)
+db.offer_shop.belongsTo(db.shop)
+db.offer.hasMany(db.offer_shop)
+db.offer_shop.belongsTo(db.offer)
 
-db.employee.belongsToMany(db.role, {
-  through: "employee_role",
-  foreignKey: "employeeId",
-  otherKey: "roleId",
-  timestamps: false,
-})
+// M-M cinema movie
+db.cinema.belongsToMany(db.movie, { through: db.cinema_movie, as: "movie" })
+db.movie.belongsToMany(db.cinema, { through: db.cinema_movie, as: "cinema" })
+db.cinema.hasMany(db.cinema_movie)
+db.cinema_movie.belongsTo(db.cinema)
+db.movie.hasMany(db.cinema_movie)
+db.cinema_movie.belongsTo(db.movie)
 
 db.ROLES = ["user", "admin", "moderator"]
 db.SERVICES_TYPE = ["restaurant", "store", "entertainment"]
@@ -143,71 +163,5 @@ db.SERVICES_STATE = ["done", "pending"]
 const data = catchAsync(async () => {
   await db.car.create({ plateNum: "123abc", color: "red" })
 })
-
-const createTypes = catchAsync(async () => {
-  await db.service_type.bulkCreate([
-    { type: "restaurant" },
-    { type: "store" },
-    { type: "entertainment" },
-    { type: "cinema" },
-  ])
-})
-
-const createServices = catchAsync(async () => {
-  await db.service.bulkCreate([
-    {
-      ServiceTypeId: 1,
-      name: "KFC",
-      location: "Third floor",
-      openAt: 8,
-      closeAt: 8,
-      phone: 010,
-    },
-    {
-      ServiceTypeId: 2,
-      name: "Men's Club",
-      location: "Second floor",
-      openAt: 8,
-      closeAt: 8,
-      phone: 010,
-    },
-    {
-      ServiceTypeId: 3,
-      name: "8D Cinema",
-      location: "Third floor",
-      openAt: 8,
-      closeAt: 8,
-      phone: 010,
-    },
-    {
-      ServiceTypeId: 1,
-      name: "Crinkle",
-      location: "Third floor",
-      openAt: 8,
-      closeAt: 8,
-      phone: 010,
-    },
-  ])
-  await db.service.create({
-    ServiceTypeId: 1,
-    name: "KFC",
-    location: "Third floor",
-    openAt: 8,
-    closeAt: 8,
-    phone: 010,
-  })
-})
-const findAllRest = catchAsync(async () => {
-  const aw = await db.service_type.findOne({
-    where: {
-      type: "restaurant",
-    },
-    include: "services",
-  })
-  console.log(JSON.stringify(aw))
-})
-// createTypes()
-// createServices()
-// findAllRest()
 // data()
 module.exports = db

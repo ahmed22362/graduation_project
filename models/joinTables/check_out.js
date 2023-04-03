@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-  const CheckOut = sequelize.define(
-    "checkOut",
+  const Checkout = sequelize.define(
+    "checkout",
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
       status: {
@@ -8,6 +8,8 @@ module.exports = (sequelize, Sequelize) => {
         values: ["pending", "done"],
         defaultValue: "pending",
       },
+      ticketPrice: Sequelize.FLOAT,
+      ticketNum: Sequelize.INTEGER,
       cost: Sequelize.FLOAT,
     },
     {
@@ -17,5 +19,6 @@ module.exports = (sequelize, Sequelize) => {
       freezeTableName: true,
     }
   )
-  return CheckOut
+
+  return Checkout
 }

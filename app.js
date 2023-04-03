@@ -4,7 +4,8 @@ const globalErrorHandler = require("./controllers/errorController")
 const userRoute = require("./routes/userRoute")
 const visitRouter = require("./routes/visitRouter")
 const carRouter = require("./routes/carRouter")
-const serviceRouter = require("./routes/serviceRouter")
+const shopRouter = require("./routes/shopRouter")
+const cinemaRouter = require("./routes/cinemaRouter")
 const offerRouter = require("./routes/offerRouter")
 const movieRouter = require("./routes/movieRouter")
 const storage = require("./utils/cloudinary")
@@ -16,14 +17,13 @@ console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV.trim() === "development") {
   app.use(morgan("dev"))
 }
-app.use(express.json())
-
 const upload = multer({ storage: storage })
 
 app.use("/api/v1/users", userRoute)
 app.use("/api/v1/visits", visitRouter)
 app.use("/api/v1/cars", carRouter)
-app.use("/api/v1/services", serviceRouter)
+app.use("/api/v1/shops", shopRouter)
+app.use("/api/v1/cinemas", cinemaRouter)
 app.use("/api/v1/offers", offerRouter)
 app.use("/api/v1/movies", movieRouter)
 

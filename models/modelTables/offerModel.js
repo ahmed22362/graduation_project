@@ -8,8 +8,9 @@ module.exports = (sequelize, Sequelize) => {
         autoIncrement: true,
         allowNull: false,
       },
-      duration: Sequelize.INTEGER,
       discount: Sequelize.DOUBLE,
+      startAt: Sequelize.DATE,
+      endAt: Sequelize.DATE,
     },
     { timestamps: false, freezeTableName: true }
   )

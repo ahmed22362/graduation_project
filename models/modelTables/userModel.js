@@ -49,7 +49,7 @@ module.exports = (sequelize, Sequelize) => {
       passwordResetExpire: Sequelize.DATE,
       imageURL: { type: Sequelize.STRING },
     },
-    { freezeTableName: true }
+    { freezeTableName: true, initialAutoIncrement: 3 }
   )
 
   User.beforeSave(async (user, options) => {

@@ -6,6 +6,11 @@ module.exports = (sequelize, Sequelize) => {
       name: Sequelize.STRING,
       email: Sequelize.STRING,
       password: Sequelize.STRING,
+      role: {
+        type: Sequelize.ENUM,
+        values: ["employee", "sub-manager"],
+        defaultValue: "employee",
+      },
     },
     { timestamps: false, freezeTableName: true }
   )

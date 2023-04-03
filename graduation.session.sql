@@ -97,7 +97,7 @@ where sType.id = 1
 SELECT *
 from "Visit"
 SELECT *
-from public."Cars"
+from public."checkOut"
 SELECT *
 from public."serviceType";
 -- drop all tables
@@ -109,3 +109,15 @@ where "timeIn" is NOT NULL
     and "timeOut" IS NULL;
 SELECT *
 from public."user_service"
+SELECT *
+from public."cinema_movie"
+SELECT "id",
+    "name",
+    "location",
+    "openAt",
+    "closeAt",
+    "phone",
+    "imageUrl",
+    "shopType"
+FROM "shop" AS "shop"
+WHERE "shop"."shopType" = 'restaurant'

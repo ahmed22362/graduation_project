@@ -6,9 +6,7 @@ const catchAsync = require("./utils/catchAsync")
 dotenv.config({ path: __dirname + "/config.env" })
 
 const port = process.env.PORT || 8000
-const Role = db.role
-const ServiceType = db.service_type
-
+const User = db.user
 const server = app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
 })
@@ -36,14 +34,6 @@ function init() {
     name: "admin",
   })
 }
-const createTypes = catchAsync(async () => {
-  await ServiceType.bulkCreate([
-    { type: "restaurant" },
-    { type: "store" },
-    { type: "entertainment" },
-  ])
-})
-
 process.on("unhandledRejection", (err) => {
   console.log(err.name, `this is message :${err}`)
   console.log("UnhandledRejection Shutting down .......")

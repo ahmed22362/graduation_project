@@ -4,8 +4,15 @@ module.exports = (sequelize, Sequelize) => {
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
       type: Sequelize.STRING,
+      details: Sequelize.STRING,
+      image: Sequelize.STRING,
+      state: {
+        type: Sequelize.ENUM,
+        values: ["pending", "done", "need help"],
+        defaultValue: "pending",
+      },
     },
-    { timestamps: false, freezeTableName: true }
+    { timestamps: true, freezeTableName: true }
   )
   return Issue
 }

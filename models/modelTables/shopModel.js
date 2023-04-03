@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-  const Service = sequelize.define(
-    "service",
+  const Shop = sequelize.define(
+    "shop",
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
       name: Sequelize.STRING,
@@ -9,8 +9,13 @@ module.exports = (sequelize, Sequelize) => {
       closeAt: Sequelize.INTEGER,
       phone: Sequelize.STRING,
       imageUrl: Sequelize.STRING,
+      shopType: {
+        type: Sequelize.ENUM,
+        values: ["shop", "restaurant", "entreatment"],
+        defaultValue: "shop",
+      },
     },
     { timestamps: false, freezeTableName: true }
   )
-  return Service
+  return Shop
 }

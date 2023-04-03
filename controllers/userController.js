@@ -3,8 +3,8 @@ const db = require("../models/index")
 const AppError = require("../utils/appError")
 const User = db.user
 const Car = db.car
-const Service = db.service
-const UserVisit = db.user_service
+const Shop = db.shop
+const UserVisit = db.user_shop
 
 // Function to filter body for only wanted params
 const filterObj = (obj, ...allowedFields) => {
@@ -84,61 +84,51 @@ exports.deleteUserById = catchAsync(async (req, res) => {
   await User.destroy({ where: { id } })
   res.status(200).json({ status: "success", data: null })
 })
+
 exports.userAddCar = catchAsync(async (req, res, next) => {
-  const { plateNum } = req.body
-  const userId = req.user.id
-  // Find the wanted car
-  let car = await Car.findByPk(plateNum)
-  car.UserId = userId
-  // Save the change in db
-  await car.save()
-  console.log(car)
-  if (!car) return next(new AppError("Can't find the car!", 404))
-  // Find user to return data with include the cars
-  const user = await User.findOne({
-    where: {
-      id: userId,
-    },
-    include: "cars",
-  })
-  res.status(200).json({ status: "success", date: user })
+  const user = req.user
+  const plateNum = req.body.plateNum
+  // Check if there are car with this number
+  const car = await Car.findByPk(plateNum)
+  if (!car) return next(new AppError("please provide valid car number", 404))
+  await user.addCar(plateNum)
+  const userCar = await User.findByPk(req.user.id, { include: "cars" })
+  res.status(200).json({ stats: "success", data: userCar })
 })
 
 exports.addToUserVisit = catchAsync(async (req, res, next) => {
-  // Find the user and the service
-  const user = await User.findByPk(req.user.id)
-  const serviceId = req.body.serviceId
+  // Find the user and the shop
+  const user = req.user
+  const shopId = req.body.shopId
+  const shop = await Shop.findByPk(shopId)
+  if (!shop) return next(new AppError("please provide valid shop id", 404))
+  // Add the shop to selected user
+  await user.addShop(shopId)
 
-  if (!serviceId) return next(new AppError("please provide service id", 404))
-
-  if (!user) return next(new AppError("please provide valid user id", 404))
-  // Add the service to selected user
-  await user.addService(serviceId)
-
-  res.status(200).json({ status: "success", data: {} })
+  res.status(200).json({ status: "success" })
 })
 
 exports.removeFromUserVisit = catchAsync(async (req, res, next) => {
-  const user = await User.findByPk(req.user.id)
-  const serviceId = req.body.serviceId
+  const user = req.user
+  const shopId = req.body.shopId
 
-  if (!serviceId) return next(new AppError("please provide service id", 404))
-  if (!user) return next(new AppError("please provide user id", 404))
+  const shop = await Shop.findByPk(shopId)
+  if (!shop) return next(new AppError("please provide valid shop id", 404))
 
-  // Add the service to selected user
-  await user.removeService(serviceId)
+  // Add the shop to selected user
+  await user.removeShop(shopId)
 
-  res.status(200).json({ status: "success", data: {} })
+  res.status(200).json({ status: "success" })
 })
 
 exports.getUserVisit = catchAsync(async (req, res, next) => {
   const userId = req.user.id
-  // find the user include the service
+  // find the user include the shop
   const userVisit = await User.findByPk(userId, {
-    include: ["service"],
+    include: ["shop"],
   })
   if (!userVisit) return next(new AppError("can't get visits", 404))
-  // Select only service
-  const service = JSON.parse(JSON.stringify(userVisit)).service
-  res.status(200).json({ status: "success", data: service })
+  // Select only shop
+  const { shop } = userVisit
+  res.status(200).json({ status: "success", data: shop })
 })
