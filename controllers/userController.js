@@ -85,17 +85,6 @@ exports.deleteUserById = catchAsync(async (req, res) => {
   res.status(200).json({ status: "success", data: null })
 })
 
-exports.userAddCar = catchAsync(async (req, res, next) => {
-  const user = req.user
-  const plateNum = req.body.plateNum
-  // Check if there are car with this number
-  const car = await Car.findByPk(plateNum)
-  if (!car) return next(new AppError("please provide valid car number", 404))
-  await user.addCar(plateNum)
-  const userCar = await User.findByPk(req.user.id, { include: "cars" })
-  res.status(200).json({ stats: "success", data: userCar })
-})
-
 exports.addToUserVisit = catchAsync(async (req, res, next) => {
   // Find the user and the shop
   const user = req.user

@@ -17,7 +17,7 @@ console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV.trim() === "development") {
   app.use(morgan("dev"))
 }
-const upload = multer({ storage: storage })
+const upload = multer({ storage })
 
 app.use("/api/v1/users", userRoute)
 app.use("/api/v1/visits", visitRouter)

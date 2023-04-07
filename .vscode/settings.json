@@ -9,6 +9,19 @@
             "database": "db",
             "username": "postgres",
             "password": "22362"
+        },
+        {
+            "pgOptions": {
+                "ssl": true
+            },
+            "previewLimit": 50,
+            "server": "dpg-cglekc0rddleudrpr4u0-a.frankfurt-postgres.render.com",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "render",
+            "database": "graduation",
+            "username": "ahmed",
+            "password": "vBo2ENdtNujErdla9EuvDdGjMYvYnhKv"
         }
     ]
 }

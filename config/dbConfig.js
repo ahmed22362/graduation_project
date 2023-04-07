@@ -12,4 +12,6 @@ module.exports = {
   },
   ElephantURL:
     "postgres://gwogfwbh:boH4Wk3Oih_AvcvkBvwAFMg6j0tK0N-1@mouse.db.elephantsql.com/gwogfwbh",
+  RENDER_POSTGRESQL_graduation:
+    "postgres://ahmed:vBo2ENdtNujErdla9EuvDdGjMYvYnhKv@dpg-cglekc0rddleudrpr4u0-a.frankfurt-postgres.render.com/graduation?ssl=true",
 }

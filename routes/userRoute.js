@@ -10,7 +10,7 @@ const router = express.Router()
 
 const upload = multer({ storage: storage })
 
-router.post("/signup", upload.single("image"), authController.signup)
+router.post("/signup", upload.single("profilePhoto"), authController.signup)
 router.post("/login", authController.login)
 router.post("/forgetPassword", authController.forgetPassword)
 router.patch("/resetPassword", authController.resetPassword)
@@ -26,7 +26,6 @@ router.patch(
   userController.updateMe
 )
 router.delete("/deleteMe", authController.protect, userController.deleteMe)
-router.post("/addCar", authController.protect, userController.userAddCar)
 router
   .route("/user-visit")
   .post(authController.protect, userController.addToUserVisit)

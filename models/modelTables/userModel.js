@@ -13,11 +13,10 @@ module.exports = (sequelize, Sequelize) => {
         autoIncrement: true,
       },
       name: { type: Sequelize.STRING, allowNull: false },
-      username: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      phone: {
+        type: Sequelize.INTEGER,
         unique: {
-          msg: "Username already in use!",
+          msg: "Phone already in use!",
         },
       },
       email: {

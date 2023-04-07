@@ -4,7 +4,6 @@ const User = require("./modelTables/userModel")
 const Car = require("./modelTables/carModel")
 const Employee = require("./modelTables/employeeModel")
 const Issue = require("./modelTables/issueModel")
-const Manager = require("./modelTables/managerModel")
 const Shop = require("./modelTables/shopModel")
 const Visit = require("./modelTables/visitModel")
 const Offer = require("./modelTables/offerModel")
@@ -14,24 +13,28 @@ const Checkout = require("./joinTables/check_out")
 const CinemaMovie = require("./joinTables/cinema_movie")
 const UserShop = require("./joinTables/user_shop")
 const OfferShop = require("./joinTables/offer_shop")
-const UserIssue = require("./joinTables/user_issue")
 const IssueEmployee = require("./joinTables/issue_employee")
+const ModelIssueEmployee = require("./../models/joinTables/modelIssue_employee")
 const catchAsync = require("../utils/catchAsync")
+const ModelIssue = require("./../models/modelTables/modelIssueModel")
 // Connect with the local databases
-// const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
-//   host: config.HOST,
-//   dialect: config.dialect,
-//   pool: {
-//     max: config.pool.max,
-//     min: config.pool.min,
-//   },
-//   logging: false,
-// })
-// Connect to elephantSql server for postgres
-const sequelize = new Sequelize(config.ElephantURL, {
+const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
+  host: config.HOST,
+  dialect: config.dialect,
+  pool: {
+    max: config.pool.max,
+    min: config.pool.min,
+  },
   logging: false,
 })
-
+// Connect to elephantSql server for postgres
+// const sequelize = new Sequelize(config.ElephantURL, {
+//   logging: false,
+// })
+// connect to render postgres db
+// const sequelize = new Sequelize(config.RENDER_POSTGRESQL_graduation, {
+//   logging: false,
+// })
 // Define Database
 const db = {}
 db.sequelize = sequelize
@@ -42,45 +45,26 @@ db.user = User(sequelize, Sequelize)
 db.car = Car(sequelize, Sequelize)
 db.employee = Employee(sequelize, Sequelize)
 db.issue = Issue(sequelize, Sequelize)
-db.manager = Manager(sequelize, Sequelize)
 db.shop = Shop(sequelize, Sequelize)
 db.visit = Visit(sequelize, Sequelize)
 db.offer = Offer(sequelize, Sequelize)
 db.movie = Movie(sequelize, Sequelize)
 db.cinema = Cinema(sequelize, Sequelize)
+db.modelIssue = ModelIssue(sequelize, Sequelize)
 db.check_out = Checkout(sequelize, Sequelize)
 db.user_shop = UserShop(sequelize, Sequelize)
 db.cinema_movie = CinemaMovie(sequelize, Sequelize)
-db.user_issue = UserIssue(sequelize, Sequelize)
 db.issue_employee = IssueEmployee(sequelize, Sequelize)
+db.modelIssue_employee = ModelIssueEmployee(sequelize, Sequelize)
 db.offer_shop = OfferShop(sequelize, Sequelize)
 // Define Relation
 
-// 1-M user and car
-db.user.hasMany(db.car, { as: "car" })
-db.car.belongsTo(db.user, { foreignKey: { allowNull: true } })
+// 1-M user and issue
+db.user.hasMany(db.issue, { as: "issue" })
+db.issue.belongsTo(db.user)
 // 1-M car and visit
 db.car.hasMany(db.visit, { as: "visit" })
 db.visit.belongsTo(db.car)
-
-// M-M user and issue
-db.user.belongsToMany(db.issue, {
-  through: db.user_issue,
-  as: "issue",
-  foreignKey: "userId",
-  otherKey: "issueId",
-})
-db.issue.belongsToMany(db.user, {
-  through: db.user_issue,
-  as: "user",
-  foreignKey: "issueId",
-  otherKey: "userId",
-  unique: false,
-})
-db.user.hasMany(db.user_issue)
-db.user_issue.belongsTo(db.user)
-db.issue.hasMany(db.user_issue)
-db.user_issue.belongsTo(db.issue)
 
 //M-M user and movies
 // Apply super many to many read the doc https://sequelize.org/docs/v6/advanced-association-concepts/advanced-many-to-many/#the-best-of-both-worlds-the-super-many-to-many-relationship
@@ -134,6 +118,23 @@ db.employee.hasMany(db.issue_employee)
 db.issue_employee.belongsTo(db.employee)
 db.issue.hasMany(db.issue_employee)
 db.issue_employee.belongsTo(db.issue)
+// M-M model issue and employee
+db.employee.belongsToMany(db.modelIssue, {
+  through: db.modelIssue_employee,
+  as: "modelIssues",
+  foreignKey: "employeeId",
+  otherKey: "modelIssueId",
+})
+db.modelIssue.belongsToMany(db.employee, {
+  through: db.modelIssue_employee,
+  as: "employee",
+  foreignKey: "modelIssueId",
+  otherKey: "employeeId",
+})
+db.employee.hasMany(db.modelIssue_employee)
+db.modelIssue_employee.belongsTo(db.employee)
+db.modelIssue.hasMany(db.modelIssue_employee)
+db.modelIssue_employee.belongsTo(db.modelIssue)
 // M-M shop offer
 db.shop.belongsToMany(db.offer, {
   through: db.offer_shop,

@@ -17,5 +17,16 @@ const storage = new CloudinaryStorage({
     public_id: (req, file) => file.originalname,
   },
 })
+const uploadImage = async (image) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload(image, (error, result) => {
+      if (error) {
+        reject(error)
+      } else {
+        resolve(result.secure_url)
+      }
+    })
+  })
+}
 
-module.exports = storage
+module.exports = { storage, uploadImage }

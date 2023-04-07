@@ -1,8 +1,8 @@
 module.exports = (sequelize, Sequelize) => {
-  const user_issue = sequelize.define(
-    "user_issue",
+  const modelIssue_employee = sequelize.define(
+    "modelIssue_employee",
     {},
     { timestamps: false, freezeTableName: true }
   )
-  return user_issue
+  return modelIssue_employee
 }
