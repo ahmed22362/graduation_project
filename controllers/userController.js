@@ -21,10 +21,7 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   res.status(200).json({ users })
 })
 exports.createUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "This route is not yet defined!",
-  })
+  res.status(404).end("this router is not exist")
 }
 
 exports.updateMe = catchAsync(async (req, res, next) => {

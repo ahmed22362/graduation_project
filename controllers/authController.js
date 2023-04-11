@@ -40,13 +40,21 @@ const createSentToken = (user, statusCode, res) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   imageUrl = req.file ? req.file.path : null
+  let passwordConfirm
+  if (req.body.confirmPassword) {
+    passwordConfirm = req.body.confirmPassword
+  }
+  passwordConfirm = req.body.passwordConfirm
+  let phone = parseInt(req.body.phone)
+  if (req.body.password != passwordConfirm)
+    return next(new AppError("the password must match", 400))
   // Create new user
   const newUser = await User.create({
     name: req.body.name,
-    phone: req.body.phone,
     email: req.body.email,
     password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
+    passwordConfirm: passwordConfirm,
+    phone: phone,
     imageURL: imageUrl,
   })
   createSentToken(newUser, 201, res)
@@ -180,7 +188,7 @@ exports.updateUserPassword = catchAsync(async (req, res, next) => {
   const user = await User.findByPk(req.user.id)
   // Check password and compare it
   if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
-    return next(new AppError("Entered password in not correct", 400))
+    return next(new AppError("Invalid current password", 401))
   }
   // Update the user data
   user.password = req.body.password

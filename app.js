@@ -10,6 +10,7 @@ const offerRouter = require("./routes/offerRouter")
 const movieRouter = require("./routes/movieRouter")
 const storage = require("./utils/cloudinary")
 const multer = require("multer")
+const swagger = require("./swagger")
 
 const app = express()
 app.use(express.json())
@@ -19,6 +20,7 @@ if (process.env.NODE_ENV.trim() === "development") {
 }
 const upload = multer({ storage })
 
+swagger(app)
 app.use("/api/v1/users", userRoute)
 app.use("/api/v1/visits", visitRouter)
 app.use("/api/v1/cars", carRouter)

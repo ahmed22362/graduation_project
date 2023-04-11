@@ -35,21 +35,10 @@ const sendErrorDev = (err, res) => {
 }
 
 const sendErrorProd = (err, res) => {
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message || "test",
-    })
-  } else {
-    // res.status(500).json({
-    //   status: "error",
-    //   message: "Something very wrong happened.",
-    // })
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message || "test",
-    })
-  }
+  res.status(err.statusCode).json({
+    status: err.status,
+    message: err.message,
+  })
 }
 
 module.exports = (err, req, res, next) => {
@@ -58,14 +47,14 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV.trim() === "development") {
     sendErrorDev(err, res)
   } else if (process.env.NODE_ENV.trim() === "production") {
-    let error = { ...err }
-    if (err.name === "SequelizeUniqueConstraintError")
-      error = handleUniqueErrorDB(err)
-    if (err.code === 11000) error = handleDuplicateFieldsDB(err)
-    if (err.name === "SequelizeValidationError")
-      error = handleValidationErrorDB(err)
-    if (err.name === "JsonWebTokenError") error = handleJWTError()
-    if (err.name === "TokenExpiredError") error = handleJWTExpiredError()
+    // let error = { ...err }
+    // if (err.name === "SequelizeUniqueConstraintError")
+    //   error = handleUniqueErrorDB(err)
+    // if (err.code === 11000) error = handleDuplicateFieldsDB(err)
+    // if (err.name === "SequelizeValidationError")
+    //   error = handleValidationErrorDB(err)
+    // if (err.name === "JsonWebTokenError") error = handleJWTError()
+    // if (err.name === "TokenExpiredError") error = handleJWTExpiredError()
     sendErrorProd(err, res)
   }
 }
