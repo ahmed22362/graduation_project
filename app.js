@@ -15,9 +15,7 @@ const swagger = require("./swagger")
 const app = express()
 app.use(express.json())
 console.log(process.env.NODE_ENV)
-if (process.env.NODE_ENV.trim() === "development") {
-  app.use(morgan("dev"))
-}
+app.use(morgan("dev"))
 const upload = multer({ storage })
 
 swagger(app)
@@ -33,12 +31,7 @@ app.use("/api/v1/upload", upload.single("image"), async (req, res, next) => {
   imageUrl = req.file ? req.file.path : null
   res.status(200).json({ imageUrl: imageUrl })
 })
-app.use("/", (req, res) => {
-  res.status(200).json({
-    status: "success",
-    message: "home page",
-  })
-})
+
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} in this server`, 404))
 })
