@@ -25,8 +25,8 @@ const handleJWTError = () =>
 const handleJWTExpiredError = () =>
   new AppError("Your token has expired! please login again.", 401)
 
-const sendErrorDev = (err, res) => {
-  console.log(err.message)
+const sendErrorDev = (err, res, req) => {
+  console.log(`${req.ip}-:` + err.message)
   res.status(err.statusCode).json({
     status: err.status,
     error: err,
@@ -35,9 +35,9 @@ const sendErrorDev = (err, res) => {
   })
 }
 
-const sendErrorProd = (err, res) => {
-  console.log(err.message)
-  res.status(err.statusCode).json({
+const sendErrorProd = (err, res, req) => {
+  console.log(`${req.ip}-:` + err.message)
+  res.status(400).json({
     status: err.status,
     message: err.message,
   })
@@ -47,7 +47,7 @@ module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500
   err.status = err.status || "error"
   if (process.env.NODE_ENV.trim() === "development") {
-    sendErrorDev(err, res)
+    sendErrorDev(err, res, req)
   } else if (process.env.NODE_ENV.trim() === "production") {
     // let error = { ...err }
     // if (err.name === "SequelizeUniqueConstraintError")
@@ -57,6 +57,6 @@ module.exports = (err, req, res, next) => {
     //   error = handleValidationErrorDB(err)
     // if (err.name === "JsonWebTokenError") error = handleJWTError()
     // if (err.name === "TokenExpiredError") error = handleJWTExpiredError()
-    sendErrorProd(err, res)
+    sendErrorProd(err, res, req)
   }
 }
