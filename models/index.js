@@ -18,23 +18,23 @@ const ModelIssueEmployee = require("./../models/joinTables/modelIssue_employee")
 const catchAsync = require("../utils/catchAsync")
 const ModelIssue = require("./../models/modelTables/modelIssueModel")
 // Connect with the local databases
-// const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
-//   host: config.HOST,
-//   dialect: config.dialect,
-//   pool: {
-//     max: config.pool.max,
-//     min: config.pool.min,
-//   },
-//   logging: false,
-// })
+const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
+  host: config.HOST,
+  dialect: config.dialect,
+  pool: {
+    max: config.pool.max,
+    min: config.pool.min,
+  },
+  logging: false,
+})
 // Connect to elephantSql server for postgres
 // const sequelize = new Sequelize(config.ElephantURL, {
 //   logging: false,
 // })
 // connect to render postgres db
-const sequelize = new Sequelize(config.RENDER_POSTGRESQL_graduation, {
-  logging: false,
-})
+// const sequelize = new Sequelize(config.RENDER_POSTGRESQL_graduation, {
+//   logging: false,
+// })
 // Define Database
 const db = {}
 db.sequelize = sequelize
@@ -60,8 +60,15 @@ db.offer_shop = OfferShop(sequelize, Sequelize)
 // Define Relation
 
 // 1-M user and issue
-db.user.hasMany(db.issue, { as: "issue" })
-db.issue.belongsTo(db.user)
+db.user.hasMany(db.issue, {
+  as: "issue",
+  foreignKey: { allowNull: false },
+  onDelete: "CASCADE",
+})
+db.issue.belongsTo(db.user, {
+  foreignKey: { allowNull: false },
+  onDelete: "CASCADE",
+})
 // 1-M car and visit
 db.car.hasMany(db.visit, { as: "visit" })
 db.visit.belongsTo(db.car)

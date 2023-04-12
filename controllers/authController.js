@@ -45,7 +45,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordConfirm = req.body.confirmPassword
   }
   passwordConfirm = req.body.passwordConfirm
-  let phone = parseInt(req.body.phone)
+  let phone = parseInt(req.body.phone) || 0
   if (req.body.password != passwordConfirm)
     return next(new AppError("the password must match", 400))
   // Create new user

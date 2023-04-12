@@ -8,9 +8,11 @@ const shopRouter = require("./routes/shopRouter")
 const cinemaRouter = require("./routes/cinemaRouter")
 const offerRouter = require("./routes/offerRouter")
 const movieRouter = require("./routes/movieRouter")
+const issueRouter = require("./routes/issueRouter")
 const storage = require("./utils/cloudinary")
 const multer = require("multer")
 const swagger = require("./swagger")
+const AppError = require("./utils/appError")
 
 const app = express()
 app.use(express.json())
@@ -26,6 +28,7 @@ app.use("/api/v1/shops", shopRouter)
 app.use("/api/v1/cinemas", cinemaRouter)
 app.use("/api/v1/offers", offerRouter)
 app.use("/api/v1/movies", movieRouter)
+app.use("/api/v1/issues", issueRouter)
 
 app.use("/api/v1/upload", upload.single("image"), async (req, res, next) => {
   imageUrl = req.file ? req.file.path : null
