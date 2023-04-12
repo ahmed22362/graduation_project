@@ -37,7 +37,7 @@ const sendErrorDev = (err, res, req) => {
 
 const sendErrorProd = (err, res, req) => {
   console.log(`${req.ip}-:` + err.message)
-  res.status(200).json({
+  res.status(400).json({
     status: err.status,
     message: err.message,
   })
