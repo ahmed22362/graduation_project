@@ -19,13 +19,25 @@ router.patch(
   authController.protect,
   authController.updateUserPassword
 )
+
+router.get(
+  "/me",
+  authController.protect,
+  userController.getMe,
+  userController.getUser
+)
 router.patch(
   "/updateMe",
   upload.single("image"),
   authController.protect,
   userController.updateMe
 )
-router.delete("/deleteMe", authController.protect, userController.deleteMe)
+router.delete(
+  "/deleteMe",
+  authController.protect,
+  userController.getMe,
+  userController.deleteUserById
+)
 router
   .route("/user-visit")
   .post(authController.protect, userController.addToUserVisit)
@@ -52,9 +64,7 @@ router
   .patch(userController.updateUserById)
   .delete(userController.deleteUserById)
 
-router
-  .route("/")
-  .get(userController.getAllUsers)
-  .post(userController.createUser)
+router.route("/").get(userController.getAllUsers)
+// .post(userController.createUser)
 
 module.exports = router

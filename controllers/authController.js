@@ -46,6 +46,8 @@ exports.signup = catchAsync(async (req, res, next) => {
   }
   passwordConfirm = req.body.passwordConfirm
   let phone = parseInt(req.body.phone) || 0
+  if (!(req.body.name || req.body.password))
+    return next(new AppError("please provide missed information"))
   if (req.body.password != passwordConfirm)
     return next(new AppError("the password must match", 400))
   // Create new user
@@ -91,8 +93,13 @@ exports.protect = catchAsync(async (req, res, next) => {
       401
     )
   }
+  let decoded = ""
   // 2) Verification token
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
+  try {
+    decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
+  } catch (error) {
+    return next(new AppError(`${error.message} - Token is not valid`, 400))
+  }
   // 3) Check if the user still exist
   const user = await User.findByPk(decoded.id)
   if (!user) {

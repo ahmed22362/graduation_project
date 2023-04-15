@@ -1,16 +1,15 @@
-const catchAsync = require("../utils/catchAsync")
 const db = require("./../models/index")
-const AppError = require("../utils/appError")
+const factory = require("./factoryHandler")
 const Issue = db.issue
 
-exports.createIssue = catchAsync(async (req, res, next) => {
-  const user = req.body.user
-  const issue = await Issue.create({
-    type: req.body.type,
-    details: req.body.details,
-    state: req.body.state,
-    userId: user ? user.id : req.body.userId,
-  })
-  if (!issue) return next(new AppError("Can't create issue", 400))
-  res.status(200).json({ status: "success", data: issue })
-})
+exports.getUserId = (req, res, next) => {
+  req.body.userId = req.user ? req.user.id : req.body.userId
+  req.query.userId = req.user ? req.user.id : req.query.userId
+  next()
+}
+
+exports.createIssue = factory.createOne(Issue)
+exports.getUserIssues = factory.getAll(Issue, ["userId"])
+exports.getIssue = factory.getOne(Issue)
+exports.updateIssue = factory.updateOne(Issue)
+exports.deleteIssue = factory.deleteOne(Issue)
