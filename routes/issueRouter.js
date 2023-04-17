@@ -4,6 +4,11 @@ const issueController = require("./../controllers/issueController")
 const router = express.Router()
 
 router
+  .route("/model")
+  .all(authController.restrictTo(["model", "manager"]))
+  .post(issueController.createModelIssue)
+
+router
   .route("/:id")
   .all(authController.protect, issueController.getUserId)
   .get(issueController.getIssue)

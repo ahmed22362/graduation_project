@@ -1,6 +1,7 @@
 const AppError = require("../utils/appError")
 const catchAsync = require("./../utils/catchAsync")
 const filterObj = require("../utils/filterObj")
+const jwt = require("jsonwebtoken")
 
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -27,21 +28,25 @@ exports.deleteOne = (Model) =>
     res.status(200).json({ status: "success", data: null })
   })
 
-exports.getOne = (Model, includeObj) =>
+exports.getOne = (Model, attributes, includeObj) =>
   catchAsync(async (req, res, next) => {
     const model = await Model.findByPk(req.params.id, {
+      attributes: attributes,
       include: includeObj,
     })
-    if (!model) return next(new AppError("can't find model", 404))
+    if (!model) {
+      return next(new AppError("can't find model", 404))
+    }
     res.status(200).json({ status: "success", data: model })
   })
 
-exports.getAll = (Model, AllowedParams, whereObj, includeObj) =>
+exports.getAll = (Model, attributes, AllowedParams, whereObj, includeObj) =>
   catchAsync(async (req, res, next) => {
     // Define empty where object
     const allowedObj = filterObj(req.query, AllowedParams)
     // if the where object is empty it return every thing
     const models = await Model.findAll({
+      attributes: attributes,
       where: whereObj || allowedObj,
       include: includeObj,
     })

@@ -5,9 +5,10 @@ router = express.Router()
 
 router
   .route("/:plateNum")
-  .get(carController.setIdPlateNum, carController.getCar)
-  .patch(carController.setIdPlateNum, carController.updateCar)
-  .delete(carController.setIdPlateNum, carController.deleteCar)
+  .all(carController.setIdPlateNum)
+  .get(carController.getCar)
+  .patch(carController.updateCar)
+  .delete(carController.deleteCar)
 router
   .route("/")
   .get(carController.getCars)

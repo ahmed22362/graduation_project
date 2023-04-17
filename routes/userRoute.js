@@ -5,24 +5,25 @@ const userController = require("./../controllers/userController")
 const authController = require("../controllers/authController")
 const checkoutController = require("../controllers/checkoutController")
 const storage = require("../utils/cloudinary")
-
+const db = require("./../models/index")
+const User = db.user
 const router = express.Router()
 
 const upload = multer({ storage: storage })
 
-router.post("/signup", authController.signup)
-router.post("/login", authController.login)
-router.post("/forgetPassword", authController.forgetPassword)
-router.patch("/resetPassword", authController.resetPassword)
+router.post("/signup", authController.signup(User))
+router.post("/login", authController.login(User))
+router.post("/forgetPassword", authController.forgetPassword(User))
+router.patch("/resetPassword", authController.resetPassword(User))
 router.patch(
   "/updateMyPassword",
-  authController.protect,
-  authController.updateUserPassword
+  authController.protect(User),
+  authController.updateUserPassword(User)
 )
 
 router.get(
   "/me",
-  authController.protect,
+  authController.protect(User),
   userController.getMe,
   userController.getUser
 )
@@ -40,14 +41,16 @@ router.delete(
 )
 router
   .route("/user-visit")
-  .post(authController.protect, userController.addToUserVisit)
-  .get(authController.protect, userController.getUserVisit)
-  .delete(authController.protect, userController.removeFromUserVisit)
+  .all(authController.protect)
+  .post(userController.addToUserVisit)
+  .get(userController.getUserVisit)
+  .delete(userController.removeFromUserVisit)
 router
   .route("/checkout")
-  .get(authController.protect, checkoutController.getCheckOut)
-  .post(authController.protect, checkoutController.addToCheckout)
-  .delete(authController.protect, checkoutController.removeFromCheckout)
+  .all(authController.protect)
+  .get(checkoutController.getCheckOut)
+  .post(checkoutController.addToCheckout)
+  .delete(checkoutController.removeFromCheckout)
 router.patch(
   "/checkout/:id",
   authController.protect,

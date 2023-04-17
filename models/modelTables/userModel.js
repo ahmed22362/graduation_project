@@ -88,16 +88,5 @@ module.exports = (sequelize, Sequelize) => {
     console.log({ code }, { dbResetCode: this.passwordResetCode })
     return code
   }
-
-  User.prototype.createPasswordRegisterCode = function () {
-    const code = 100000 + Math.floor(Math.random() * 900000)
-    this.passwordResetCode = crypto
-      .createHash("sha256")
-      .update(code.toString())
-      .digest("hex")
-    this.passwordResetExpire = Date.now() + 20 * 60 * 1000 // 10 minutes
-    console.log({ code }, { dbResetCode: this.passwordResetCode })
-    return code
-  }
   return User
 }

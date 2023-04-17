@@ -1,6 +1,7 @@
 const db = require("./../models/index")
 const factory = require("./factoryHandler")
 const Issue = db.issue
+const ModelIssue = db.modelIssue
 
 exports.getUserId = (req, res, next) => {
   req.body.userId = req.user ? req.user.id : req.body.userId
@@ -8,8 +9,16 @@ exports.getUserId = (req, res, next) => {
   next()
 }
 
+// for normal issue coming from logged user
 exports.createIssue = factory.createOne(Issue)
 exports.getUserIssues = factory.getAll(Issue, ["userId"])
 exports.getIssue = factory.getOne(Issue)
 exports.updateIssue = factory.updateOne(Issue)
 exports.deleteIssue = factory.deleteOne(Issue)
+
+// for issue coming from AI model
+exports.createModelIssue = factory.createOne(ModelIssue)
+exports.updateModelIssue = factory.updateOne(ModelIssue)
+exports.getModelIssue = factory.getOne(ModelIssue)
+exports.deleteModelIssue = factory.deleteOne(ModelIssue)
+exports.updateModelIssue = factory.updateOne(ModelIssue)

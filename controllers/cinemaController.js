@@ -6,14 +6,7 @@ const factory = require("./factoryHandler")
 const Cinema = db.cinema
 const Movie = db.movie
 
-const AllowedParams = [
-  "id",
-  "name",
-  "location",
-  "shopType",
-  "openAt",
-  "closeAt",
-]
+const AllowedParams = ["id", "name", "location", "openAt", "closeAt"]
 // To get all cinema also query based on name and id if exist
 exports.getAllCinemas = factory.getAll(Cinema, AllowedParams)
 exports.getCinemaById = factory.getOne(Cinema)
