@@ -2,7 +2,9 @@ const db = require("./../models/index")
 const factory = require("./factoryHandler")
 const Employee = db.employee
 
-exports.getAll = factory.getAll(Employee, {})
+exports.getAll = factory.getAll(Employee, {
+  exclude: ["password"],
+})
 exports.getEmployee = factory.getOne(Employee, {
   exclude: ["password"],
 })

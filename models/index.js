@@ -18,23 +18,23 @@ const ModelIssueEmployee = require("./../models/joinTables/modelIssue_employee")
 const catchAsync = require("../utils/catchAsync")
 const ModelIssue = require("./../models/modelTables/modelIssueModel")
 // Connect with the local databases
-const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
-  host: config.HOST,
-  dialect: config.dialect,
-  pool: {
-    max: config.pool.max,
-    min: config.pool.min,
-  },
-  logging: false,
-})
+// const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
+//   host: config.HOST,
+//   dialect: config.dialect,
+//   pool: {
+//     max: config.pool.max,
+//     min: config.pool.min,
+//   },
+//   logging: false,
+// })
 // Connect to elephantSql server for postgres
 // const sequelize = new Sequelize(config.ElephantURL, {
 //   logging: false,
 // })
 // connect to render postgres db
-// const sequelize = new Sequelize(config.RENDER_POSTGRESQL_graduation, {
-//   logging: false,
-// })
+const sequelize = new Sequelize(config.RENDER_POSTGRESQL_graduation, {
+  logging: false,
+})
 // Define Database
 const db = {}
 db.sequelize = sequelize

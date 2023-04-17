@@ -41,6 +41,8 @@ const createSentToken = (model, statusCode, res) => {
 
 exports.signup = (Model) =>
   catchAsync(async (req, res, next) => {
+    if (!Model) return next(new AppError("please provide model instance", 500))
+
     imageUrl = req.file ? req.file.path : null
     let passwordConfirm
     if (req.body.confirmPassword) {
@@ -66,6 +68,8 @@ exports.signup = (Model) =>
 
 exports.login = (Model) =>
   catchAsync(async (req, res, next) => {
+    if (!Model) return next(new AppError("please provide model instance", 500))
+
     const { email, password } = req.body
 
     // 1) Check if the email and password exits
@@ -83,6 +87,8 @@ exports.login = (Model) =>
 
 exports.protect = (Model) =>
   catchAsync(async (req, res, next) => {
+    if (!Model) return next(new AppError("please provide model instance", 500))
+
     // 1) Getting token and Check if it's true
     let token
     if (
@@ -144,6 +150,8 @@ exports.restrictTo = (...roles) => {
 
 exports.forgetPassword = (Model) =>
   catchAsync(async (req, res, next) => {
+    if (!Model) return next(new AppError("please provide model instance", 500))
+
     // Find user
     const model = await Model.findOne({ where: { email: req.body.email } })
     if (!model) {
@@ -183,6 +191,8 @@ exports.forgetPassword = (Model) =>
   })
 exports.resetPassword = (Model) =>
   catchAsync(async (req, res, next) => {
+    if (!Model) return next(new AppError("please provide model instance", 500))
+
     // Find the user based on token
     const hashedCode = crypto
       .createHash("sha256")
@@ -210,6 +220,7 @@ exports.resetPassword = (Model) =>
 
 exports.updateUserPassword = (Model) =>
   catchAsync(async (req, res, next) => {
+    if (!Model) return next(new AppError("please provide model instance", 500))
     // Get User
     const model = await Model.findByPk(req.user.id)
     // Check password and compare it

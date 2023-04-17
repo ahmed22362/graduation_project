@@ -33,13 +33,10 @@ router
     // authController.restrictTo("manager", "sub-manager"),
     cinemaController.deleteCinema
   )
-router
-  .route("/")
-  .get(cinemaController.getAllCinemas)
-  .post(
-    authController.protect(Employee),
-    authController.restrictTo("manager", "sub-manager"),
-    cinemaController.addCinema
-  )
+router.route("/").get(cinemaController.getAllCinemas).post(
+  // authController.protect(Employee),
+  // authController.restrictTo("manager", "sub-manager"),
+  cinemaController.addCinema
+)
 
 module.exports = router
