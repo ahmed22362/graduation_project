@@ -2,7 +2,7 @@ const app = require("./app")
 const dotenv = require("dotenv")
 const db = require("./models/index")
 const catchAsync = require("./utils/catchAsync")
-const initWhere = require("./config/initWhere")
+const initObj = require("./config/initObj")
 const Employee = db.employee
 
 dotenv.config({ path: __dirname + "/config.env" })
@@ -22,18 +22,18 @@ db.sequelize
   })
 
 const findModelAndManager = catchAsync(async () => {
-  const [model, created] = await Employee.findOrCreate({
-    where: initWhere.modelWhere,
-    defaults: initWhere.modelWhere,
+  const [model, modelCreated] = await Employee.findOrCreate({
+    where: initObj.modelWhere,
+    defaults: initObj.modelDefault,
   })
   const [manager, managerCreated] = await Employee.findOrCreate({
-    where: initWhere.managerWhere,
-    defaults: initWhere.managerWhere,
+    where: initObj.managerWhere,
+    defaults: initObj.managerDefault,
   })
   if (managerCreated) {
     console.log("manager created.")
   }
-  if (created) {
+  if (modelCreated) {
     console.log("model created.")
   }
 })

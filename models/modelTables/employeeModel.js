@@ -7,7 +7,16 @@ module.exports = (sequelize, Sequelize) => {
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
       name: Sequelize.STRING,
-      email: Sequelize.STRING,
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: {
+          msg: "Email address already in use!",
+        },
+        validate: {
+          isEmail: { msg: "Please provide a valid email" },
+        },
+      },
       password: Sequelize.STRING,
       role: {
         type: Sequelize.ENUM,
@@ -31,6 +40,5 @@ module.exports = (sequelize, Sequelize) => {
   ) {
     return await bcrypt.compare(candidatePassword, employeePassword)
   }
-
   return Employee
 }
