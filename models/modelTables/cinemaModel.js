@@ -3,8 +3,8 @@ module.exports = (sequelize, Sequelize) => {
     "cinema",
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-      name: Sequelize.STRING,
-      location: Sequelize.STRING,
+      name: { type: Sequelize.STRING, allowNull: false },
+      location: { type: Sequelize.STRING, allowNull: false },
       openAt: Sequelize.INTEGER,
       closeAt: Sequelize.INTEGER,
       phone: Sequelize.STRING,

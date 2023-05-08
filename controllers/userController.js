@@ -2,6 +2,7 @@ const catchAsync = require("../utils/catchAsync")
 const db = require("../models/index")
 const AppError = require("../utils/appError")
 const factory = require("./factoryHandler")
+const authController = require("./authController")
 const User = db.user
 const Shop = db.shop
 
@@ -24,8 +25,9 @@ exports.updateMe = catchAsync(async (req, res, next) => {
       new AppError("To update your password use updateMyPassword route", 400)
     )
   }
+  req.body.imageUrl = image
   // Filter the wanted fields only
-  const filteredBody = filterObj(req.body, "name", "email", "imageURL")
+  const filteredBody = filterObj(req.body, "name", "email", "imageUrl")
   // Update function return array contain numbers of effected records and the returning
   // option to return the updated record
   const updatedUser = await User.update(filteredBody, {
@@ -82,3 +84,10 @@ exports.getUserVisit = catchAsync(async (req, res, next) => {
   const { shop } = userVisit
   res.status(200).json({ status: "success", data: shop })
 })
+
+exports.signUpUser = authController.signup(User)
+exports.logInUser = authController.login(User)
+exports.forgetPasswordUser = authController.forgetPassword(User)
+exports.resetPasswordUser = authController.resetPassword(User)
+exports.protectUser = authController.protect(User)
+exports.updateMyPasswordUser = authController.updateUserPassword(User)

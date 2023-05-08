@@ -1,18 +1,21 @@
 const express = require("express")
-const router = express.Router()
-const db = require("../models/index")
-const employeeController = require("../controllers/employeeController")
-const authController = require("./../controllers/authController")
+const multer = require("multer")
 
-router.route("/login").post(authController.login(db.employee))
+const router = express.Router()
+const employeeController = require("../controllers/employeeController")
+const { storage } = require("./../utils/cloudinary")
+
+const upload = multer({ storage: storage("photos") })
+
+router.route("/login").post(employeeController.logInEmployee)
 router
   .route("/:id")
   .get(employeeController.getEmployee)
-  .patch(employeeController.updateEmployee)
+  .patch(upload.single("image"), employeeController.updateEmployee)
   .delete(employeeController.delete)
 router
   .route("/")
   .get(employeeController.getAll)
-  .post(employeeController.addEmployee)
+  .post(upload.single("image"), employeeController.addEmployee)
 
 module.exports = router

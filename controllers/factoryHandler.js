@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken")
 
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
+    const imageUrl = req.file ? req.file.path : null
+    if (imageUrl) req.body.imageUrl = imageUrl
     const body = req.body
     const model = await Model.create(body)
     if (!model) return next(new AppError("can't create model", 400))
@@ -13,6 +15,9 @@ exports.createOne = (Model) =>
 
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
+    const imageUrl = req.file ? req.file.path : null
+    if (imageUrl) req.body.imageUrl = imageUrl
+
     const id = req.params.id
     const body = req.body
     const model = await Model.findByPk(id)
@@ -58,6 +63,8 @@ exports.getAll = (Model, attributes, AllowedParams, whereObj, includeObj) =>
 
 exports.updateWhere = (Model, whereObj, includeObj) =>
   catchAsync(async (req, res, next) => {
+    const imageUrl = req.file ? req.file.path : null
+    if (imageUrl) req.body.imageUrl = imageUrl
     const model = await Model.findAll({ where: whereObj, include: includeObj })
     if (!model) return next(new AppError("can't find model with this id", 404))
     const updatedModel = await model.update(body, { returning: true })

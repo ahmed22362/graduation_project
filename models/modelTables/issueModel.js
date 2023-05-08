@@ -5,7 +5,7 @@ module.exports = (sequelize, Sequelize) => {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
       type: Sequelize.STRING,
       details: Sequelize.STRING,
-      image: Sequelize.STRING,
+      imageUrl: Sequelize.STRING,
       state: {
         type: Sequelize.ENUM,
         values: ["pending", "done", "need help"],

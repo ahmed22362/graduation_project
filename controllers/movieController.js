@@ -1,7 +1,6 @@
 const db = require("../models/index")
 const AppError = require("../utils/appError")
 const catchAsync = require("../utils/catchAsync")
-const filterObj = require("../utils/filterObj")
 const factory = require("./factoryHandler")
 const Movie = db.movie
 const Cinema = db.cinema
@@ -9,19 +8,17 @@ const Cinema = db.cinema
 const AllowedParams = [
   "id",
   "name",
-  "location",
-  "shopType",
-  "openAt",
-  "closeAt",
+  "duration",
+  "release",
+  "genre",
+  "ticketPrice",
+  "cinemaId",
 ]
 
 // get all movies with selected query
-exports.getMovies = factory.getAll(Movie, AllowedParams, {
-  model: Cinema,
-  as: "cinema",
-})
+exports.getMovies = factory.getAll(Movie, {}, AllowedParams)
 exports.updateMovie = factory.updateOne(Movie)
-exports.getMovie = factory.getOne(Movie, { model: Cinema, as: "cinema" })
+exports.getMovie = factory.getOne(Movie, {}, { model: Cinema, as: "cinema" })
 exports.deleteMovie = factory.deleteOne(Movie)
 exports.addMovie = factory.createOne(Movie)
 exports.getMovieCinemas = catchAsync(async (req, res, next) => {

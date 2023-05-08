@@ -46,7 +46,7 @@ module.exports = (sequelize, Sequelize) => {
       passwordChangedAt: Sequelize.DATE,
       passwordResetCode: Sequelize.STRING,
       passwordResetExpire: Sequelize.DATE,
-      imageURL: { type: Sequelize.STRING },
+      imageUrl: Sequelize.STRING,
     },
     { freezeTableName: true, initialAutoIncrement: 3 }
   )

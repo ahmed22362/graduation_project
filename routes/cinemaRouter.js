@@ -1,22 +1,27 @@
 const express = require("express")
+const multer = require("multer")
 const cinemaController = require("../controllers/cinemaController")
-const authController = require("../controllers/authController")
-const db = require("./../models/index")
-const Employee = db.employee
-const router = express.Router()
+const employeeController = require("./../controllers/employeeController")
+const authController = require("./../controllers/authController")
+const { storage } = require("./../utils/cloudinary")
 
-router.route("/:id/movies/:movieId").get(cinemaController.getMovieFromCinema)
+const upload = multer({ storage: storage("gFolder") })
+
+const router = express.Router()
+router
+  .route("/:cinemaId/movies/:movieId")
+  .get(cinemaController.getMovieFromCinema)
 
 router
-  .route("/:id/movies")
+  .route("/:cinemaId/movies")
   .get(cinemaController.getCinemaMovies)
   .post(
-    // authController.protect,
+    // employeeController.protectEmployee,
     // authController.restrictTo("manager", "sub-manager"),
     cinemaController.addMovieToCinema
   )
   .delete(
-    // authController.protect,
+    // employeeController.protectEmployee,
     // authController.restrictTo("manager", "sub-manager"),
     cinemaController.removeMovieFromCinema
   )
@@ -24,18 +29,20 @@ router
   .route("/:id")
   .get(cinemaController.getCinemaById)
   .patch(
-    // authController.protect,
+    // employeeController.protectEmployee,
     // authController.restrictTo("manager", "sub-manager"),
+    upload.single("image"),
     cinemaController.updateCinema
   )
   .delete(
-    // authController.protect,
+    // employeeController.protectEmployee,
     // authController.restrictTo("manager", "sub-manager"),
     cinemaController.deleteCinema
   )
 router.route("/").get(cinemaController.getAllCinemas).post(
-  // authController.protect(Employee),
+  // employeeController.protectEmployee,
   // authController.restrictTo("manager", "sub-manager"),
+  upload.single("image"),
   cinemaController.addCinema
 )
 

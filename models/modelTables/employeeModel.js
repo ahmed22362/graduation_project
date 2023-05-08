@@ -17,7 +17,8 @@ module.exports = (sequelize, Sequelize) => {
           isEmail: { msg: "Please provide a valid email" },
         },
       },
-      password: Sequelize.STRING,
+      password: { type: Sequelize.STRING, allowNull: false },
+      imageUrl: Sequelize.STRING,
       role: {
         type: Sequelize.ENUM,
         values: ["employee", "sub-manager", "manager", "model"],

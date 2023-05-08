@@ -18,7 +18,7 @@ exports.getCinemaMovies = factory.getOne(Cinema, { model: Movie, as: "movie" })
 // use the super auto generated function addModel in Sequelize to add many to many values
 exports.addMovieToCinema = catchAsync(async (req, res, next) => {
   // find the cinema
-  const cinema = await Cinema.findByPk(req.params.id)
+  const cinema = await Cinema.findByPk(req.params.cinemaId)
   if (!cinema)
     return next(new AppError("There are no cinema with this id", 404))
   // find the movie
@@ -31,7 +31,7 @@ exports.addMovieToCinema = catchAsync(async (req, res, next) => {
 
 exports.removeMovieFromCinema = catchAsync(async (req, res, next) => {
   // find the cinema
-  const cinema = await Cinema.findByPk(req.params.id)
+  const cinema = await Cinema.findByPk(req.params.cinemaId)
   if (!cinema)
     return next(new AppError("There are no cinema with this id", 404))
   // find the movie
@@ -53,7 +53,7 @@ exports.removeMovieFromCinema = catchAsync(async (req, res, next) => {
 
 exports.getMovieFromCinema = catchAsync(async (req, res, next) => {
   // find the cinema
-  const cinema = await Cinema.findByPk(req.params.id)
+  const cinema = await Cinema.findByPk(req.params.cinemaId)
   if (!cinema)
     return next(new AppError("There are no cinema with this id", 404))
   // find the movie

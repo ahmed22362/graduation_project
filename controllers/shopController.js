@@ -75,6 +75,10 @@ exports.getHotOffersShops = catchAsync(async (req, res, next) => {
           endAt: { [Op.gte]: Date.now() },
         },
       },
+      // remove through -join- table attributes
+      through: {
+        attributes: [],
+      },
     },
   })
   if (!shops)

@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
     "shop",
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-      name: Sequelize.STRING,
+      name: { type: Sequelize.STRING, allowNull: false },
       location: Sequelize.STRING,
       openAt: Sequelize.INTEGER,
       closeAt: Sequelize.INTEGER,

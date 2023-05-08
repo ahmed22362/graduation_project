@@ -3,13 +3,14 @@ module.exports = (sequelize, Sequelize) => {
     "movie",
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-      name: { type: Sequelize.STRING },
+      name: { type: Sequelize.STRING, allowNull: false },
       duration: Sequelize.INTEGER,
       release: Sequelize.DATEONLY,
       description: Sequelize.STRING,
-      genre: Sequelize.STRING,
+      genre: { type: Sequelize.STRING, allowNull: false },
       time: Sequelize.TIME,
-      ticketPrice: Sequelize.DOUBLE,
+      ticketPrice: { type: Sequelize.DOUBLE, allowNull: false },
+      imageUrl: Sequelize.STRING,
     },
     { timestamps: false, freezeTableName: true }
   )

@@ -29,7 +29,6 @@ const createSentToken = (model, statusCode, res) => {
   // Send cookies
   res.cookie("jwt", token, cookieOptions)
   // Sent status
-  const name = model.constructor.getTableName()
   res.status(statusCode).json({
     status: "success",
     token,
@@ -43,7 +42,7 @@ exports.signup = (Model) =>
   catchAsync(async (req, res, next) => {
     if (!Model) return next(new AppError("please provide model instance", 500))
 
-    imageUrl = req.file ? req.file.path : null
+    const imageUrl = req.file ? req.file.path : ""
     let passwordConfirm
     if (req.body.confirmPassword) {
       passwordConfirm = req.body.confirmPassword
@@ -51,7 +50,12 @@ exports.signup = (Model) =>
     passwordConfirm = req.body.passwordConfirm
     let phone = parseInt(req.body.phone) || 0
     if (!(req.body.name || req.body.password))
-      return next(new AppError("please provide missed information"))
+      return next(
+        new AppError(
+          "please provide missed information - name or password-",
+          400
+        )
+      )
     if (req.body.password != passwordConfirm)
       return next(new AppError("the password must match", 400))
     // Create new user
@@ -61,7 +65,7 @@ exports.signup = (Model) =>
       password: req.body.password,
       passwordConfirm: passwordConfirm,
       phone: phone,
-      imageURL: imageUrl,
+      imageUrl: imageUrl,
     })
     createSentToken(newModel, 201, res)
   })
@@ -140,7 +144,6 @@ exports.protect = (Model) =>
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
-    console.log(req.employee)
     if (!roles.includes(req.employee.role)) {
       return next(new AppError("You do not have permission to do this", 403))
     }

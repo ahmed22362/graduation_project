@@ -10,7 +10,6 @@ exports.addToCheckout = catchAsync(async (req, res, next) => {
   const movieId = req.body.movieId
   const movie = await Movie.findByPk(movieId)
   if (!movie) return next(new AppError("please provide valid movie id", 404))
-  console.log(movie.ticketPrice, req.body.ticketNum)
   await user.addMovie(movieId, {
     through: {
       ticketPrice: movie.ticketPrice,

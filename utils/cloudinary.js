@@ -9,12 +9,18 @@ cloudinary.config({
 })
 
 // Create Cloudinary storage object
-const storage = new CloudinaryStorage({
+const userStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "gFolder",
+    folder: "photos/user",
     allowed_formats: ["jpg", "png"],
-    public_id: (req, file) => file.originalname,
+  },
+})
+const gStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "gFolder/asset",
+    allowed_formats: ["jpg", "png"],
   },
 })
 const uploadImage = async (image) => {
@@ -23,10 +29,18 @@ const uploadImage = async (image) => {
       if (error) {
         reject(error)
       } else {
-        resolve(result.secure_url)
+        resolve(result)
       }
     })
   })
 }
-
-module.exports = { storage, uploadImage }
+const storage = (folderName) => {
+  return new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: folderName,
+      allowed_formats: ["jpg", "png"],
+    },
+  })
+}
+module.exports = { gStorage, userStorage, uploadImage, storage }

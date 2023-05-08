@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
         autoIncrement: true,
         allowNull: false,
       },
-      discount: Sequelize.DOUBLE,
+      discount: { type: Sequelize.DOUBLE, allowNull: false },
       startAt: Sequelize.DATE,
       endAt: Sequelize.DATE,
     },

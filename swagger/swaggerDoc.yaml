@@ -1,0 +1,695 @@
+openapi: 3.0.0
+info:
+  title: "Your API Docs"
+  description: "Your API Description"
+  version: "1.0.0"
+basePath: /api/v1
+servers:
+  - url: https://graduation-project-nrnm.onrender.com/
+    description: Production server (uses live data)
+
+  - url: 127.0.0.1:30
+    description: local server (uses test data)
+
+
+
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+paths:
+  /users/signup:
+    post:
+      summary: Signup a new user
+      description: Creates a new user account with the provided details
+      tags: [Users]
+      consumes:
+        - application/json
+      parameters:
+        - in: formData
+          name: profilePhoto
+          type: file
+          description: User profile photo
+        - in: formData
+          name: name
+          type: string
+          required: true
+          description: User name
+        - in: formData
+          name: email
+          type: string
+          required: true
+          description: User email
+        - in: formData
+          name: password
+          type: string
+          required: true
+          description: User password
+        - in: formData
+          name: passwordConfirm
+          type: string
+          required: true
+          description: Confirm user password
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                  data:
+                    type: array
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: John Doe
+                          email:
+                            type: string
+                            example: johndoe@example.com
+                          role:
+                            type: string
+                            example: user
+                          photo:
+                            type: string
+                            example: https://res.cloudinary.com/demo/image/upload/v1234567890/sample.jpg
+        "400":
+          description: Invalid request body or missing required fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  message:
+                    type: string
+                    example: Invalid request body or missing required fields
+        "400":
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  message:
+                    type: string
+                    example: Email already exists
+  /users/login:
+    post:
+      summary: Login a user
+      tags: [Users]
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                example: johndoe@example.com
+              password:
+                type: string
+                example: password123
+      responses:
+        "200":
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                  data:
+                    type: Array
+                    example:
+
+        "401":
+          description: Incorrect email or password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  message:
+                    type: string
+                    example: Incorrect email or password
+
+  /users/forgetPassword:
+    post:
+      summary: Send reset password token to user email
+      tags: [Users]
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                example: johndoe@example.com
+      responses:
+        "200":
+          description: Reset password token sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Reset password token sent to email
+        "404":
+          description: There is no user with this email address
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  message:
+                    type: string
+                    example: There is no user with this email address
+        "500":
+          description: There wat an error during sending the email. Try again later
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  message:
+                    type: string
+                    example: There wat an error during sending the email. Try again later
+  /users/resetPassword:
+    patch:
+      summary: Change the current user password
+      tags: [Users]
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              passwordResetCode:
+                type: string
+                example: "123456"
+              password:
+                type: string
+                example: password
+              passwordConfirm:
+                type: string
+                example: password
+      responses:
+        "200":
+          description: password changed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+
+                      
+
+        "400":
+          description: code is invalid or has expire
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  message:
+                    type: string
+                    example: code is invalid or has expire
+  /users/updateMyPassword:
+    patch:
+      tags:
+        - Users
+      summary: Update user password
+      description: Updates the password for the currently logged in user account
+      consumes:
+        - application/json
+      parameters:
+        - name: password
+          in: body
+          description: User's old and new passwords
+          required: true
+      responses:
+        '200':
+          description: Password updated successfully
+          '400':
+          description: Invalid input data
+
+  /users:
+    get:
+      summary: Get all users
+      tags:
+        - Users
+      responses:
+        200:
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+      security:
+        - bearerAuth: []
+        
+  paths:
+  /users/{id}:
+    get:
+      summary: Retrieve a user by ID
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          description: ID of the user to retrieve
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: Not Found
+    patch:
+      summary: Update a user by ID
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: User ID
+        - in: body
+          name: body
+          description: User object to update
+          required: true
+          schema:
+            $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: User object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      security:
+        - bearerAuth: []
+    delete:
+      summary: Delete a user by ID
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: User ID
+      responses:
+        204:
+          description: No content
+      security:
+        - bearerAuth: []
+  /shops:
+    get:
+      summary: "Get all shops"
+      tags:
+        - Shops
+      description: "Returns a list of all shops"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Shop"
+    post:
+      summary: "Create a new shop"
+      tags:
+        - Shops
+      description: "Creates a new shop"
+      parameters:
+        - name: "Shop"
+          in: "body"
+          description: "Shop object"
+          required: true
+          schema:
+            $ref: "#/definitions/Shop"
+      responses:
+        201:
+          description: "Created"
+          schema:
+            $ref: "#/definitions/Shop"
+  /shops/{id}:
+    get:
+      summary: "Get a shop by ID"
+      tags:
+        - Shops
+      description: "Returns a shop by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Shop ID"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Shop"
+    patch:
+      summary: "Update a shop by ID"
+      tags:
+        - Shops
+      description: "Updates a shop by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Shop ID"
+          required: true
+          type: "integer"
+        - name: "Shop"
+          in: "body"
+          description: "Shop object"
+          required: true
+          schema:
+            $ref: "#/definitions/Shop"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Shop"
+    delete:
+      summary: "Delete a shop by ID"
+      tags:
+        - Shops
+      description: "Deletes a shop by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Shop ID"
+          required: true
+          type: "integer"
+      responses:
+        204:
+          description: "No content"
+  /shops/{id}/offer:
+    get:
+      summary: "Get offers for a shop by ID"
+      tags:
+        - Shops
+      description: "Returns offers for a shop by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Shop ID"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Offer"
+    post:
+      summary: "Add an offer to a shop by ID"
+      tags:
+        - Shops
+      description: "Adds an offer to a shop by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Shop ID"
+          required: true
+          type: "integer"
+        - name: "Offer"
+          in: "body"
+          description: "Offer object"
+          required: true
+          schema:
+            $ref: "#/definitions/Offer"
+      responses:
+        201:
+          description: "Created"
+          schema:
+            $ref: "#/definitions/Offer"    
+definitions:
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+      phone:
+        type: "integer"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      passwordConfirm:
+        type: "string"
+      imageURL:
+        type: "string"
+  Car:
+    type: "object"
+    properties:
+      plateNum:
+        type: "string"
+      color:
+        type: "string"
+  Shop:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique identifier for the shop
+        name:
+          type: string
+          description: The name of the shop
+        location:
+          type: string
+          description: The location of the shop
+        openAt:
+          type: integer
+          description: The opening hour of the shop
+        closeAt:
+          type: integer
+          description: The closing hour of the shop
+        phone:
+          type: string
+          description: The phone number of the shop
+        imageUrl:
+          type: string
+          description: The URL of the image for the shop
+        shopType:
+          type: string
+          description: The type of the shop
+          enum: [shop, restaurant, entreatment]
+      required:
+        - name
+        - location
+        - openAt
+        - closeAt
+        - phone
+        - shopType
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - name
+        - phone
+        - email
+        - password
+        - passwordConfirm
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the user
+        name:
+          type: string
+          description: User's full name
+        phone:
+          type: integer
+          format: int64
+          description: User's phone number
+        email:
+          type: string
+          description: User's email address
+        password:
+          type: string
+          description: User's password
+          minLength: 8
+          maxLength: 100
+        passwordConfirm:
+          type: string
+          description: Password confirmation
+          minLength: 8
+          maxLength: 100
+        passwordChangedAt:
+          type: string
+          format: date-time
+          description: Timestamp of the last password change
+        passwordResetCode:
+          type: string
+          description: Code used for resetting password
+        passwordResetExpire:
+          type: string
+          format: date-time
+          description: Timestamp when the password reset code expires
+        imageURL:
+          type: string
+          description: URL of the user's profile picture
+components:
+  schemas:
+    Visit:
+      type: object
+      required:
+        - id
+        - title
+        - description
+        - images
+        - categories
+        - city
+        - address
+        - price
+        - rating
+        - status
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the visit
+        title:
+          type: string
+          description: Visit title
+        description:
+          type: string
+          description: Visit description
+        images:
+          type: array
+          items:
+            type: string
+          description: Array of URLs of the visit's images
+        categories:
+          type: array
+          items:
+            type: string
+          description: Array of categories of the visit
+        city:
+          type: string
+          description: Name of the city where the visit is located
+        address:
+          type: string
+          description: Visit's address
+        price:
+          type: number
+          description: Visit's price
+        rating:
+          type: number
+          description: Visit's rating
+        status:
+          type: string
+          description: Visit's status (active or inactive)
+components:
+  schemas:
+    Checkout:
+      type: object
+      required:
+        - id
+        - visitId
+        - userId
+        - date
+        - quantity
+        - status
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the checkout
+        visitId:
+          type: integer
+          format: int64
+          description: Identifier of the visited place
+        userId:
+          type: integer
+          format: int64
+          description: Identifier of the user who visited
+        date:
+          type: string
+          format: date-time
+          description: Date of the visit
+        quantity:
+          type: integer
+          format: int64
+          description: Number of tickets purchased
+        status:
+          type: string
+          description: Status of the checkout (success or failure)

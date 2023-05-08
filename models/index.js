@@ -35,6 +35,28 @@ const ModelIssue = require("./../models/modelTables/modelIssueModel")
 const sequelize = new Sequelize(config.RENDER_POSTGRESQL_graduation, {
   logging: false,
 })
+// Connect with the MS Azure databases
+// const sequelize = new Sequelize(
+//   config.Azure_db_name,
+//   config.Azure_db_user,
+//   config.Azure_db_password,
+//   {
+//     host: config.Azure_host,
+//     port: config.Azure_port,
+//     dialect: config.dialect,
+//     pool: {
+//       max: config.pool.max,
+//       min: config.pool.min,
+//     },
+//     ssl: true,
+//     dialectOptions: {
+//       ssl: {
+//         require: true,
+//       },
+//     },
+//     logging: false,
+//   }
+// )
 // Define Database
 const db = {}
 db.sequelize = sequelize
