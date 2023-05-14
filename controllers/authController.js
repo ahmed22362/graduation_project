@@ -40,19 +40,18 @@ const createSentToken = (model, statusCode, res) => {
 
 exports.signup = (Model) =>
   catchAsync(async (req, res, next) => {
+    console.log("body:", req.body, "headers:")
     if (!Model) return next(new AppError("please provide model instance", 500))
-
-    const imageUrl = req.file ? req.file.path : ""
     let passwordConfirm
     if (req.body.confirmPassword) {
       passwordConfirm = req.body.confirmPassword
     }
     passwordConfirm = req.body.passwordConfirm
-    let phone = parseInt(req.body.phone) || 0
-    if (!(req.body.name || req.body.password))
+    let phone = req.body.phone || "0"
+    if (!(req.body.name && req.body.password && req.body.email))
       return next(
         new AppError(
-          "please provide missed information - name or password-",
+          "please provide missed information - name or password or email-",
           400
         )
       )
@@ -65,7 +64,6 @@ exports.signup = (Model) =>
       password: req.body.password,
       passwordConfirm: passwordConfirm,
       phone: phone,
-      imageUrl: imageUrl,
     })
     createSentToken(newModel, 201, res)
   })
@@ -73,7 +71,6 @@ exports.signup = (Model) =>
 exports.login = (Model) =>
   catchAsync(async (req, res, next) => {
     if (!Model) return next(new AppError("please provide model instance", 500))
-
     const { email, password } = req.body
 
     // 1) Check if the email and password exits
@@ -144,7 +141,7 @@ exports.protect = (Model) =>
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.employee.role)) {
+    if (!roles.flat(Infinity).includes(req.employee.role)) {
       return next(new AppError("You do not have permission to do this", 403))
     }
     next()

@@ -3,8 +3,7 @@ const swaggerUi = require("swagger-ui-express")
 const YAML = require("yamljs")
 const path = require("path")
 
-
-const swaggerDefinition = YAML.load(path.join(__dirname,"./swaggerDoc.yaml"))
+const swaggerDefinition = YAML.load(path.join(__dirname, "./swaggerDoc.yaml"))
 
 const options = {
   swaggerDefinition,

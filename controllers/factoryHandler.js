@@ -13,6 +13,19 @@ exports.createOne = (Model) =>
     res.status(200).json({ status: "success", data: model })
   })
 
+exports.createOneWithout = (Model, propertiesToRemove) =>
+  catchAsync(async (req, res, next) => {
+    const imageUrl = req.file ? req.file.path : null
+    if (imageUrl) req.body.imageUrl = imageUrl
+    const body = req.body
+    for (let prop of propertiesToRemove) {
+      delete body[prop]
+    }
+    const model = await Model.create(body)
+    if (!model) return next(new AppError("can't create model", 400))
+    res.status(200).json({ status: "success", data: model })
+  })
+
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const imageUrl = req.file ? req.file.path : null
@@ -48,6 +61,7 @@ exports.getOne = (Model, attributes, includeObj) =>
 exports.getAll = (Model, attributes, AllowedParams, whereObj, includeObj) =>
   catchAsync(async (req, res, next) => {
     // Define empty where object
+
     const allowedObj = filterObj(req.query, AllowedParams)
     // if the where object is empty it return every thing
     const models = await Model.findAll({

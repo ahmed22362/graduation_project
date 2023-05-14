@@ -8,7 +8,13 @@ const router = express.Router()
 
 const upload = multer({ storage: userStorage })
 
-router.post("/signup", upload.single("image"), userController.signUpUser)
+router.post("/signup", userController.signUpUser)
+router.post(
+  "/userImage",
+  upload.single("image"),
+  userController.protectUser,
+  userController.uploadImage
+)
 router.post("/login", userController.logInUser)
 router.post("/forgetPassword", userController.forgetPasswordUser)
 router.patch("/resetPassword", userController.resetPasswordUser)

@@ -1,6 +1,7 @@
 const express = require("express")
 const morgan = require("morgan")
 const multer = require("multer")
+const cors = require("cors")
 
 // routers
 const userRoute = require("./routes/userRoute")
@@ -25,8 +26,36 @@ const swagger = require("./swagger/swagger")
 const app = express()
 app.use(express.json())
 console.log(process.env.NODE_ENV)
+
 app.use(morgan("dev"))
 const upload = multer({ storage: storage("gFolder") })
+
+// allow access from all origins - note: this is security risk-
+// app.use(
+//   cors({
+//     origin: "*",
+//     methods: "*",
+//     allowedHeaders: "*",
+//   })
+// )
+// app.use((req, res, next) => {
+//   res.set("Access-Control-Allow-Origin", "*")
+//   res.set("Access-Control-Allow-Headers", "*")
+//   res.set("Access-Control-Allow-Methods", "*")
+//   next()
+// })
+app.use((req, res, next) => {
+  res.set("Access-Control-Allow-Origin", "*")
+  res.set(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE,PATCH, OPTIONS"
+  )
+  res.set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200)
+  }
+  next()
+})
 
 swagger(app)
 app.use("/api/v1/users", userRoute)
@@ -40,14 +69,12 @@ app.use("/api/v1/issues", issueRouter)
 app.use("/api/v1/employees", employeeRouter)
 app.use("/api/manager", managerRouter)
 
-app.post("/api/v1/upload", upload.single("image"), async (req, res, next) => {
+app.post("/api/v1/upload", upload.single("image"), async (req, res) => {
   imageUrl = req.file ? req.file.path : ""
   // const result = await uploadImage(req.file.path)
   // console.log(result)
-  console.log(req.body, imageUrl)
-  res
-    .status(200)
-    .json({ body: { imageUrl, name: req.body.name, email: req.body.email } })
+  console.log(imageUrl)
+  res.status(200).json({ body: { imageUrl } })
 })
 app.get("/upload-image", (req, res) => {
   res.sendFile(__dirname + "/assets/index.html")

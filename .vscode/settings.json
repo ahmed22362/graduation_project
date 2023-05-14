@@ -25,5 +25,9 @@
         }
     ],
     "appService.defaultWebAppToDeploy": "/subscriptions/d2964e5a-b214-4766-9ec2-5bb7da2b72ab/resourceGroups/graduation-team/providers/Microsoft.Web/sites/graduation-projectt",
-    "appService.deploySubpath": "."
+    "appService.deploySubpath": ".",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8"
+    },
+    "python.formatting.provider": "none"
 }

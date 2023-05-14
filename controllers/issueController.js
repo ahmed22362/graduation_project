@@ -11,14 +11,13 @@ exports.getUserId = (req, res, next) => {
 
 // for normal issue coming from logged user
 exports.createIssue = factory.createOne(Issue)
-exports.getUserIssues = factory.getAll(Issue, ["userId"])
+exports.getUserIssues = factory.getAll(Issue)
 exports.getIssue = factory.getOne(Issue)
 exports.updateIssue = factory.updateOne(Issue)
 exports.deleteIssue = factory.deleteOne(Issue)
 
 // for issue coming from AI model
 exports.createModelIssue = factory.createOne(ModelIssue)
-exports.updateModelIssue = factory.updateOne(ModelIssue)
 exports.getModelIssue = factory.getOne(ModelIssue)
 exports.getModelIssues = factory.getAll(ModelIssue)
 exports.deleteModelIssue = factory.deleteOne(ModelIssue)

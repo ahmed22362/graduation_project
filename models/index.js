@@ -13,28 +13,29 @@ const Checkout = require("./joinTables/check_out")
 const CinemaMovie = require("./joinTables/cinema_movie")
 const UserShop = require("./joinTables/user_shop")
 const OfferShop = require("./joinTables/offer_shop")
+const EmployeeAttendance = require("./modelTables/employeeAttendanceModel")
 const IssueEmployee = require("./joinTables/issue_employee")
 const ModelIssueEmployee = require("./../models/joinTables/modelIssue_employee")
 const catchAsync = require("../utils/catchAsync")
 const ModelIssue = require("./../models/modelTables/modelIssueModel")
 // Connect with the local databases
-// const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
-//   host: config.HOST,
-//   dialect: config.dialect,
-//   pool: {
-//     max: config.pool.max,
-//     min: config.pool.min,
-//   },
-//   logging: false,
-// })
+const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
+  host: config.HOST,
+  dialect: config.dialect,
+  pool: {
+    max: config.pool.max,
+    min: config.pool.min,
+  },
+  logging: false,
+})
 // Connect to elephantSql server for postgres
 // const sequelize = new Sequelize(config.ElephantURL, {
 //   logging: false,
 // })
 // connect to render postgres db
-const sequelize = new Sequelize(config.RENDER_POSTGRESQL_graduation, {
-  logging: false,
-})
+// const sequelize = new Sequelize(config.RENDER_POSTGRESQL_graduation, {
+//   logging: false,
+// })
 // Connect with the MS Azure databases
 // const sequelize = new Sequelize(
 //   config.Azure_db_name,
@@ -73,6 +74,7 @@ db.offer = Offer(sequelize, Sequelize)
 db.movie = Movie(sequelize, Sequelize)
 db.cinema = Cinema(sequelize, Sequelize)
 db.modelIssue = ModelIssue(sequelize, Sequelize)
+db.employeeAttendance = EmployeeAttendance(sequelize, Sequelize)
 db.check_out = Checkout(sequelize, Sequelize)
 db.user_shop = UserShop(sequelize, Sequelize)
 db.cinema_movie = CinemaMovie(sequelize, Sequelize)
@@ -94,6 +96,9 @@ db.issue.belongsTo(db.user, {
 // 1-M car and visit
 db.car.hasMany(db.visit, { as: "visit" })
 db.visit.belongsTo(db.car)
+// 1-M employee and attendance
+db.employee.hasMany(db.employeeAttendance, { as: "attendance" })
+db.employeeAttendance.belongsTo(db.employee)
 
 //M-M user and movies
 // Apply super many to many read the doc https://sequelize.org/docs/v6/advanced-association-concepts/advanced-many-to-many/#the-best-of-both-worlds-the-super-many-to-many-relationship

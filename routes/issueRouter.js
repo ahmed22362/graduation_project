@@ -1,34 +1,51 @@
 const express = require("express")
 const multer = require("multer")
-const authController = require("./../controllers/authController")
 const issueController = require("./../controllers/issueController")
 const { storage } = require("./../utils/cloudinary")
-
+const UserController = require("./../controllers/userController")
+const employeeController = require("./../controllers/employeeController")
+const authController = require("./../controllers/authController")
 const router = express.Router()
 
-const upload = multer({ storage: storage("photos") })
+const upload = multer({ storage: storage("issue photos") })
+
+// model issues
 router
   .route("/model")
-  .all(authController.protect, authController.restrictTo(["model", "manager"]))
-  .post(upload.single("image"), issueController.createModelIssue)
+  .all(
+    employeeController.protectEmployee,
+    authController.restrictTo(["model", "manager"])
+  )
+  .post(
+    (req, res, next) => {
+      console.log(req.file)
+      next()
+    },
+    upload.single("image"),
+    issueController.createModelIssue
+  )
   .get(issueController.getModelIssues)
 router
   .route("/model/:id")
-  .all(authController.protect, authController.restrictTo(["model", "manager"]))
+  .all(
+    employeeController.protectEmployee,
+    authController.restrictTo(["model", "manager"])
+  )
   .get(issueController.getModelIssue)
   .patch(upload.single("image"), issueController.updateModelIssue)
   .delete(issueController.deleteModelIssue)
 
+// user issues
 router
   .route("/:id")
-  .all(authController.protect, issueController.getUserId)
+  .all(UserController.protectUser, issueController.getUserId)
   .get(issueController.getIssue)
   .patch(upload.single("image"), issueController.updateIssue)
   .delete(issueController.deleteIssue)
 
 router
   .route("/")
-  .all(authController.protect, issueController.getUserId)
+  .all(UserController.protectUser, issueController.getUserId)
   .get(issueController.getUserIssues)
   .post(upload.single("image"), issueController.createIssue)
 module.exports = router

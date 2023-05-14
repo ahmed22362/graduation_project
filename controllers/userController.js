@@ -84,7 +84,16 @@ exports.getUserVisit = catchAsync(async (req, res, next) => {
   const { shop } = userVisit
   res.status(200).json({ status: "success", data: shop })
 })
-
+exports.uploadImage = catchAsync(async (req, res, next) => {
+  const imageUrl = req.file ? req.file.path : null
+  const user = await User.update(
+    {
+      imageUrl,
+    },
+    { where: { id: req.user.id }, returning: true }
+  )
+  res.status(201).json({ status: "success", data: user[1] })
+})
 exports.signUpUser = authController.signup(User)
 exports.logInUser = authController.login(User)
 exports.forgetPasswordUser = authController.forgetPassword(User)

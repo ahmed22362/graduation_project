@@ -14,6 +14,7 @@ const AllowedParams = [
   "shopType",
   "openAt",
   "closeAt",
+  "imageUrl",
 ]
 
 exports.getAllShop = factory.getAll(Shop, AllowedParams)
