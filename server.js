@@ -2,6 +2,7 @@ const app = require("./app")
 const dotenv = require("dotenv")
 const db = require("./models/index")
 const employeeController = require("./controllers/employeeController")
+// const makeData = require("./utils/dummyData")
 dotenv.config({ path: __dirname + "/config.env" })
 
 const port = process.env.PORT || 8000

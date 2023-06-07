@@ -3,7 +3,7 @@ const db = require("../models/index")
 const AppError = require("../utils/appError")
 const chooseColor = require("../utils/chooseColor")
 const { Op } = require("sequelize")
-
+const mapCarPlate = require("./../utils/mapCarPlate")
 const Car = db.car
 const Visit = db.visit
 const sequelize = db.sequelize
@@ -68,6 +68,7 @@ exports.visitCarIn = catchAsync(async (req, res, next) => {
   if (!plateNum) {
     return next(new AppError("please provide a plate number!", 400))
   }
+  mapCarPlate.convert(plateNum)
   //check if the car already in
   const carIn = await Visit.findOne({
     where: { carPlateNum: plateNum, timeIn: { [Op.not]: null }, timeOut: null },
@@ -149,7 +150,7 @@ exports.getVisitsByCar = catchAsync(async (req, res, next) => {
   const carVisits = await Visit.findAll({ where: { carPlateNum: plateNum } })
   if (!carVisits)
     return next(
-      new AppError("Cant get visits by car something wrong happened", 500)
+      new AppError("Cant get visits by car something wrong happened", 400)
     )
   res.status(200).json({ status: "success", data: carVisits })
 })
@@ -169,8 +170,10 @@ exports.getVisitById = catchAsync(async (req, res, next) => {
 exports.deleteVisitById = catchAsync(async (req, res, next) => {
   const id = req.params.id
   if (!id) return next(new AppError("can't find params id", 400))
-  await Visit.destroy({ id })
-  res.status(204).json({ status: "success", data: null })
+  const visit = await Visit.findByPk(id)
+  if (!visit) return next(new AppError("can't find visit with this id", 404))
+  await visit.destroy()
+  res.status(204).json({ status: "success", data: [] })
 })
 
 exports.updateVisitById = catchAsync(async (req, res, next) => {

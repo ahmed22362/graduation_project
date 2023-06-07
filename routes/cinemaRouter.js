@@ -5,7 +5,7 @@ const employeeController = require("./../controllers/employeeController")
 const authController = require("./../controllers/authController")
 const { storage } = require("./../utils/cloudinary")
 
-const upload = multer({ storage: storage("gFolder") })
+const upload = multer({ storage: storage("photos/cinema") })
 
 const router = express.Router()
 router

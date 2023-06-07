@@ -40,7 +40,6 @@ const createSentToken = (model, statusCode, res) => {
 
 exports.signup = (Model) =>
   catchAsync(async (req, res, next) => {
-    console.log("body:", req.body, "headers:")
     if (!Model) return next(new AppError("please provide model instance", 500))
     let passwordConfirm
     if (req.body.confirmPassword) {
@@ -112,19 +111,25 @@ exports.protect = (Model) =>
       return next(new AppError(`${error.message} - Token is not valid`, 400))
     }
     // 3) Check if the user still exist
-    console.log(decoded)
     const model = await Model.findByPk(decoded.id)
     if (!model) {
       return next(
-        new AppError("The user belong's to this token no longer exist.")
+        new AppError(
+          "The user belong's to this token no longer exist. or not have the permission to do this",
+          403
+        )
       )
     }
+
     const name = model.constructor.getTableName()
     if (name == "user") {
       // 4) Check if user change password
       if (model.changedPasswordAfter(decoded.iat)) {
         return next(
-          new AppError("User recently changed password! please login again.")
+          new AppError(
+            "User recently changed password! please login again.",
+            400
+          )
         )
       }
     }
@@ -136,6 +141,7 @@ exports.protect = (Model) =>
     } else {
       req.model = model
     }
+    console.log(decoded, name)
     next()
   })
 

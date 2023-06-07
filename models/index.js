@@ -86,11 +86,9 @@ db.offer_shop = OfferShop(sequelize, Sequelize)
 // 1-M user and issue
 db.user.hasMany(db.issue, {
   as: "issue",
-  foreignKey: { allowNull: false },
-  onDelete: "CASCADE",
 })
 db.issue.belongsTo(db.user, {
-  foreignKey: { allowNull: false },
+  foreignKey: { type: Sequelize.UUID },
   onDelete: "CASCADE",
 })
 // 1-M car and visit
@@ -98,7 +96,9 @@ db.car.hasMany(db.visit, { as: "visit" })
 db.visit.belongsTo(db.car)
 // 1-M employee and attendance
 db.employee.hasMany(db.employeeAttendance, { as: "attendance" })
-db.employeeAttendance.belongsTo(db.employee)
+db.employeeAttendance.belongsTo(db.employee, {
+  foreignKey: { type: Sequelize.UUID },
+})
 
 //M-M user and movies
 // Apply super many to many read the doc https://sequelize.org/docs/v6/advanced-association-concepts/advanced-many-to-many/#the-best-of-both-worlds-the-super-many-to-many-relationship
@@ -123,7 +123,7 @@ db.check_out.belongsTo(db.movie)
 // M-M user and service saved as user visit static data only add and delete
 db.user.belongsToMany(db.shop, {
   through: db.user_shop,
-  as: "shops",
+  as: "shop",
   foreignKey: "userId",
 })
 db.shop.belongsToMany(db.user, {

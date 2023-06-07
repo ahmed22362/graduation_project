@@ -16,14 +16,7 @@ router
     employeeController.protectEmployee,
     authController.restrictTo(["model", "manager"])
   )
-  .post(
-    (req, res, next) => {
-      console.log(req.file)
-      next()
-    },
-    upload.single("image"),
-    issueController.createModelIssue
-  )
+  .post(upload.single("image"), issueController.createModelIssue)
   .get(issueController.getModelIssues)
 router
   .route("/model/:id")
@@ -37,15 +30,24 @@ router
 
 // user issues
 router
-  .route("/:id")
+  .route("/user/:id")
   .all(UserController.protectUser, issueController.getUserId)
   .get(issueController.getIssue)
   .patch(upload.single("image"), issueController.updateIssue)
   .delete(issueController.deleteIssue)
 
 router
-  .route("/")
+  .route("/user")
   .all(UserController.protectUser, issueController.getUserId)
   .get(issueController.getUserIssues)
+  .post(upload.single("image"), issueController.createIssue)
+
+router
+  .route("/")
+  .all(
+    employeeController.protectEmployee,
+    authController.restrictTo(["manager", "model"])
+  )
+  .get(issueController.getAllIssues)
   .post(upload.single("image"), issueController.createIssue)
 module.exports = router

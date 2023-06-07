@@ -1,3 +1,4 @@
+const catchAsync = require("../utils/catchAsync")
 const db = require("./../models/index")
 const factory = require("./factoryHandler")
 const Issue = db.issue
@@ -11,11 +12,14 @@ exports.getUserId = (req, res, next) => {
 
 // for normal issue coming from logged user
 exports.createIssue = factory.createOne(Issue)
-exports.getUserIssues = factory.getAll(Issue)
+exports.getAllIssues = factory.getAll(Issue)
 exports.getIssue = factory.getOne(Issue)
 exports.updateIssue = factory.updateOne(Issue)
 exports.deleteIssue = factory.deleteOne(Issue)
-
+exports.getUserIssues = catchAsync(async (req, res, next) => {
+  const issues = await Issue.findAll({ where: { userId: req.user.id } })
+  res.status(200).json({ status: "success", data: issues })
+})
 // for issue coming from AI model
 exports.createModelIssue = factory.createOne(ModelIssue)
 exports.getModelIssue = factory.getOne(ModelIssue)

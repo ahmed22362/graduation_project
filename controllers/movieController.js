@@ -13,10 +13,11 @@ const AllowedParams = [
   "genre",
   "ticketPrice",
   "cinemaId",
+  "imageUrl",
 ]
 
 // get all movies with selected query
-exports.getMovies = factory.getAll(Movie, {}, AllowedParams)
+exports.getMovies = factory.getAll(Movie, {}, {})
 exports.updateMovie = factory.updateOne(Movie)
 exports.getMovie = factory.getOne(Movie, {}, { model: Cinema, as: "cinema" })
 exports.deleteMovie = factory.deleteOne(Movie)

@@ -70,7 +70,9 @@ router
   .patch(upload.single("image"), userController.updateUserById)
   .delete(userController.deleteUserById)
 
-router.route("/").get(userController.getAllUsers)
-// .post(userController.createUser)
+router
+  .route("/")
+  .get(userController.getAllUsers)
+  .post(userController.createUser)
 
 module.exports = router

@@ -5,7 +5,12 @@ module.exports = (sequelize, Sequelize) => {
   const Employee = sequelize.define(
     "employee",
     {
-      id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+      id: {
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        primaryKey: true,
+        allowNull: false,
+      },
       name: Sequelize.STRING,
       email: {
         type: Sequelize.STRING,
