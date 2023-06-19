@@ -120,4 +120,6 @@ SELECT "id",
     "imageUrl",
     "shopType"
 FROM "shop" AS "shop"
-WHERE "shop"."shopType" = 'restaurant'
+WHERE "shop"."shopType" = 'restaurant';
+SELECT *
+from issue

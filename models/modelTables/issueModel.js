@@ -3,16 +3,20 @@ module.exports = (sequelize, Sequelize) => {
     "issue",
     {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-      type: Sequelize.STRING,
+      name: Sequelize.STRING,
+      location: Sequelize.STRING,
+      contact_method: Sequelize.STRING,
       details: Sequelize.STRING,
       imageUrl: Sequelize.STRING,
       state: {
         type: Sequelize.ENUM,
-        values: ["pending", "done", "need help"],
-        defaultValue: "pending",
+        values: ["found", "not found"],
+        defaultValue: "not found",
       },
     },
     { timestamps: true, freezeTableName: true }
   )
+
+  Issue.sync({ force: true })
   return Issue
 }
