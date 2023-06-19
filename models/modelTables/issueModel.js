@@ -17,6 +17,5 @@ module.exports = (sequelize, Sequelize) => {
     { timestamps: true, freezeTableName: true }
   )
 
-  Issue.sync({ force: true })
   return Issue
 }
