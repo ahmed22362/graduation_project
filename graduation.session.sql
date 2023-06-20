@@ -121,5 +121,8 @@ SELECT "id",
     "shopType"
 FROM "shop" AS "shop"
 WHERE "shop"."shopType" = 'restaurant';
-SELECT *
+SELECT id,
+    name,
+    userId
 from issue
+ORDER BY id DESC;

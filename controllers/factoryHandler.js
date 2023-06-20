@@ -5,9 +5,14 @@ const jwt = require("jsonwebtoken")
 
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
+    if (req.user) {
+      req.body.userId = req.user.id
+    }
     const imageUrl = req.file ? req.file.path : null
     if (imageUrl) req.body.imageUrl = imageUrl
     const body = req.body
+    console.log(body)
+
     const model = await Model.create(body)
     if (!model) return next(new AppError("can't create model", 400))
     res.status(200).json({ status: "success", data: model })
