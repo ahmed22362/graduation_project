@@ -25,7 +25,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
       new AppError("To update your password use updateMyPassword route", 400)
     )
   }
-  req.body.imageUrl = image
+  req.body.imageUrl = image || req.body.imageUrl
   // Filter the wanted fields only
   const filteredBody = filterObj(req.body, "name", "email", "imageUrl")
   // Update function return array contain numbers of effected records and the returning

@@ -199,7 +199,7 @@ const makeCinemaMovies = (cinemaId, movieId) => {
     console.log("cinema add to movie with id: ", movieId)
   })
 }
-// makeAll(false, false, false, false, false, false)
+makeAll(true, true, true, true, true, true)
 // makeUser()
 // makeUserRelation("6f5c2643-5d33-4505-ad27-ff5ec8676bea", [1, 2, 3])
 // makeShopOffer(1, [1, 3])
