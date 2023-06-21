@@ -68,7 +68,7 @@ exports.visitCarIn = catchAsync(async (req, res, next) => {
   if (!plateNum) {
     return next(new AppError("please provide a plate number!", 400))
   }
-  mapCarPlate.convert(plateNum)
+  // mapCarPlate.convert(plateNum)
   //check if the car already in
   const carIn = await Visit.findOne({
     where: { carPlateNum: plateNum, timeIn: { [Op.not]: null }, timeOut: null },
@@ -126,9 +126,9 @@ exports.visitCarOut = catchAsync(async (req, res, next) => {
   // to save timeout and convert it to date
   updatedVisit = await updatedVisit.save()
 
-  // Calculate the cost of this by convert ms to hours multiply by the cost of that is .9$
+  // Calculate the cost of this by convert ms to hours multiply by the = every hour * 10 pound
   const cost =
-    ((updatedVisit.timeOut - updatedVisit.timeIn) / (1000 * 60 * 60)) * 0.9
+    ((updatedVisit.timeOut - updatedVisit.timeIn) / (1000 * 60 * 60)) * 10
 
   updatedVisit.cost = cost
 
@@ -145,12 +145,31 @@ exports.deleteCarVisits = async (req, res, next) => {
   res.status(204).json({ status: "success", data: null })
 }
 
-exports.getVisitsByCar = catchAsync(async (req, res, next) => {
+exports.getVisitByCar = catchAsync(async (req, res, next) => {
   const { plateNum } = req.params
-  const carVisits = await Visit.findAll({ where: { carPlateNum: plateNum } })
+  const carVisit = await Visit.findOne({
+    where: { carPlateNum: plateNum, timeIn: { [Op.not]: null }, timeOut: null },
+  })
+  if (!carVisit)
+    return next(
+      new AppError(
+        "Cant get visit by car something wrong happened!\n Are you sure it in our garage?",
+        400
+      )
+    )
+  // cost  = every hour * 10 pound
+  const cost = ((Date.now() - carVisit.timeIn) / (1000 * 60 * 60)) * 10
+  carVisit.cost = cost
+  res.status(200).json({ status: "success", data: carVisit })
+})
+exports.getAllCarVisit = catchAsync(async (req, res, next) => {
+  const { plateNum } = req.params
+  const carVisits = await Visit.findAll({
+    where: { carPlateNum: plateNum },
+  })
   if (!carVisits)
     return next(
-      new AppError("Cant get visits by car something wrong happened", 400)
+      new AppError("Cant get visits by car something wrong happened!", 400)
     )
   res.status(200).json({ status: "success", data: carVisits })
 })

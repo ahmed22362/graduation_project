@@ -8,8 +8,9 @@ router.route("/visitCarOut").post(visitController.visitCarOut)
 router.route("/sections").get(visitController.getSectionCapacity)
 router
   .route("/car/:plateNum")
-  .get(visitController.getVisitsByCar)
+  .get(visitController.getVisitByCar)
   .delete(visitController.deleteCarVisits)
+router.get("/car/:plateNum/all", visitController.getAllCarVisit)
 router
   .route("/:id")
   .get(visitController.getVisitById)
