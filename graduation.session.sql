@@ -126,3 +126,5 @@ SELECT id,
     userId
 from issue
 ORDER BY id DESC;
+ALTER TABLE user
+add cm
