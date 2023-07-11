@@ -13,7 +13,7 @@ module.exports = {
   ElephantURL:
     "postgres://gwogfwbh:boH4Wk3Oih_AvcvkBvwAFMg6j0tK0N-1@mouse.db.elephantsql.com/gwogfwbh",
   RENDER_POSTGRESQL_graduation:
-    "postgres://graduation_juyy_user:0NmdG9qJFNVrV6gnoX7UQD2pEzzSW7DW@dpg-cimoah15rnurtfcplvag-a/graduation_juyy?ssl=true",
+    "postgres://graduation_juyy_user:0NmdG9qJFNVrV6gnoX7UQD2pEzzSW7DW@dpg-cimoah15rnurtfcplvag-a.frankfurt-postgres.render.com/graduation_juyy?ssl=true",
   Azure_host: "graduation-db.postgres.database.azure.com",
   Azure_port: 5432,
   Azure_db_name: "postgres",
